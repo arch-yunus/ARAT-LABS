@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARAT LABS - Bilişsel Sistemler ve Elektronik Harp Araştırma Portalı</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Arat Labs, Yapay Genel Zeka (AGI), Serbest Enerji Prensibi, Bilişsel Elektronik Harp (OMEGA) ve uç yapay zeka (Edge AI) teknolojilerinde uzmanlaşmış bağımsız bir araştırma ve üretim merkezidir.">
+  <meta name="keywords" content="Arat Labs, AGI, Yapay Genel Zeka, Elektronik Harp, OMEGA, Active Inference, Serbest Enerji Prensibi, SWaP-C, Jetson Orin Nano, Wigner-Ville">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Tech Grid Background Grid -->
+  <div class="tech-grid"></div>
+  <div class="glow-orb" id="orb-agi"></div>
+  <div class="glow-orb" id="orb-omega"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Top System Header -->
+    <header class="main-header">
+      <div class="logo-area">
+        <img src="assets/logo.jpg" alt="ARAT Labs Logo" class="header-logo" id="logo-trigger">
+        <div class="title-text">
+          <h1>ARAT LABS</h1>
+          <span class="sub-title">COGNITIVE SYSTEMS &amp; DEFENSE</span>
+        </div>
+      </div>
+      
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="manifesto">
+          <svg class="tab-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          MANİFESTO
+        </button>
+        <button class="nav-tab" data-tab="agi">
+          <svg class="tab-icon" viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm1-17h-2v2h2V5zm0 4h-2v6h2V9zm0 8h-2v2h2v-2z"/></svg>
+          ARAT AGI RESEARCH
+        </button>
+        <button class="nav-tab" data-tab="omega">
+          <svg class="tab-icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 18c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+          ARAT OMEGA EW
+        </button>
+        <button class="nav-tab" data-tab="mission">
+          <svg class="tab-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-5h2v5zm0-7h-2V7h2v2z"/></svg>
+          GÖREV KONTROL
+        </button>
+      </div>
+
+      <div class="system-status">
+        <div class="status-item">
+          <span class="status-label">SPEKTRUM</span>
+          <span class="status-value text-green" id="spectrum-indicator">SECURE</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">AGI MODEL</span>
+          <span class="status-value text-blue" id="agi-indicator">OPTIMAL</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">SİSTEM SAATİ</span>
+          <span class="status-value" id="system-clock">13:37:00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Panels Area -->
+    <main class="main-content">
+
+      <!-- PANEL 1: MANIFESTO & PORTAL -->
+      <section class="content-panel active" id="panel-manifesto">
+        <div class="manifesto-grid">
+          
+          <div class="manifesto-hero">
+            <div class="logo-card">
+              <img src="assets/logo.jpg" alt="ARAT Labs Logo" class="large-logo">
+              <div class="logo-overlay-text">ARAT TECHNOLOGY &amp; SYSTEMS</div>
+            </div>
+            <div class="manifesto-intro">
+              <div class="cyber-badge">ARAT LABS ENTERPRISE © 2026</div>
+              <h2>Teknolojide Devrimi Hedefleyen Bağımsız Araştırma ve Üretim Şirketi</h2>
+              <p class="manifesto-text">
+                Bizim inancımıza göre zeka; devasa veri merkezlerinde hapsolmuş, yalnızca istatistiksel olasılık dağılımları üreten monolitik bir yapı olamaz. Gerçek zeka; çevresiyle etkileşime giren, belirsizlik (sürpriz) anında hayatta kalabilen ve kısıtlı donanım kaynaklarıyla dahi otonom kararlar alabilen <strong>"bedenlenmiş" (embodied)</strong> bir sistem olmalıdır.
+              </p>
+              <div class="manifesto-actions">
+                <button class="btn btn-primary" onclick="switchTab('agi')">AGI Araştırma Laboratuvarı</button>
+                <button class="btn btn-secondary" onclick="switchTab('omega')">OMEGA Savunma Sistemleri</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="quotes-sidebar">
+            <div class="quote-card">
+              <p>"Yaratamadığım şeyi anlayamam."</p>
+              <cite>— Richard Feynman</cite>
+            </div>
+            <div class="quote-card">
+              <p>"Zeka, evrenin kendisini anlamlandırma biçimidir. Bizim görevimiz bu süreci hızlandırmaktır."</p>
+              <cite>— David Deutsch</cite>
+            </div>
+            <div class="quote-card">
+              <p>"Makineler düşünebilir mi? Bu soruyu cevaplamak için 'makine' ve 'düşünmek' kelimelerinin anlamlarını dikkatlice tanımlamalıyız."</p>
+              <cite>— Alan Turing</cite>
+            </div>
+          </div>
+
+          <div class="labs-overview-row">
+            <div class="lab-card card-agi" onclick="switchTab('agi')">
+              <div class="card-header">
+                <h3>ARAT AGI RESEARCH</h3>
+                <span class="card-tag tag-blue">LAB-01</span>
+              </div>
+              <p>Serbest Enerji Prensibi (Free Energy Principle), Hiyerarşik Aktif Çıkarım (Active Inference) ve Kuantum Biliş (Quantum Cognition) teorilerine dayalı otonom zihin ağları araştırması.</p>
+              <div class="card-features">
+                <span>Bilişsel Orkestrasyon</span>
+                <span>Edge AI C++ / SwiGLU</span>
+                <span>EKF Sensor Fusion</span>
+              </div>
+              <div class="card-footer-link">Laboratuvarı İncele &rarr;</div>
+            </div>
+
+            <div class="lab-card card-omega" onclick="switchTab('omega')">
+              <div class="card-header">
+                <h3>ARAT OMEGA EW</h3>
+                <span class="card-tag tag-red">LAB-02</span>
+              </div>
+              <p>Elektromanyetik spektrumda otonom egemenlik kurmayı hedefleyen Bilişsel Elektronik Harp suite'i. Kapalı çevrim OODA (Observe-Orient-Decide-Act) döngüsü.</p>
+              <div class="card-features">
+                <span>Wigner-Ville Analizi</span>
+                <span>Deep Modulation Recognition</span>
+                <span>Bayesian Decision Matrix</span>
+                <span>SWaP-C Peltier Cooling</span>
+              </div>
+              <div class="card-footer-link">Laboratuvarı İncele &rarr;</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PANEL 2: ARAT AGI RESEARCH -->
+      <section class="content-panel" id="panel-agi">
+        <div class="agi-grid">
+          
+          <!-- Column 1: AGI Connection Graph -->
+          <div class="panel-box box-neural">
+            <div class="box-header">
+              <div class="box-title">
+                <span class="status-dot dot-blue blinking"></span>
+                <h3>BİLİŞSEL BAĞLANTI GRAFİĞİ (NEURAL NETWORK)</h3>
+              </div>
+              <div class="box-actions">
+                <button class="btn-icon" id="btn-neural-refresh" title="Ağı Yeniden Yapılandır">
+                  <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="canvas-container">
+              <canvas id="neural-canvas"></canvas>
+              <div class="overlay-telemetry" id="agi-telemetry-text">
+                <div>DURUM: BİLİŞSEL ETKİN</div>
+                <div>AKTİF AJANLAR: 12 asenkron mikroservis</div>
+                <div>SEMANTİK HAFIZA REHBERİ: OKUNDU (5.2M Vektör)</div>
+                <div>SON VERİ ALIMI: Sensor Fusion EKF stabil</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Free Energy / Active Inference Simulation -->
+          <div class="panel-box box-inference">
+            <div class="box-header">
+              <div class="box-title">
+                <span class="status-dot dot-blue"></span>
+                <h3>AKTİF ÇIKARIM &amp; SERBEST ENERJİ SİMÜLATÖRÜ</h3>
+              </div>
+              <div class="box-actions">
+                <span class="badge badge-info" id="surprise-value">Sürpriz Değeri: 0.12 nats</span>
+              </div>
+            </div>
+            
+            <div class="inference-sim-container">
+              <div class="sim-controls">
+                <p class="sim-desc">
+                  Ajan, çevresel belirsizliği (serbest enerjiyi) minimize etmeye çalışır. Hedefe ulaşmak için "sürpriz" olasılığını azaltan yollar arar.
+                </p>
+                <div class="control-row">
+                  <button class="btn btn-sm btn-primary" id="btn-sim-reset">Ajanı Sıfırla</button>
+                  <button class="btn btn-sm btn-secondary" id="btn-sim-obstacle">Engel Ekle/Kaldır</button>
+                  <label class="toggle-container">
+                    <input type="checkbox" id="chk-quantum-noise">
+                    <span class="toggle-label">Kuantum Bilişsel Gürültü</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="sim-arena-wrapper">
+                <canvas id="inference-canvas"></canvas>
+              </div>
+
+              <div class="free-energy-chart-container">
+                <div class="chart-header">Varyasyonel Serbest Enerji (F(s, a))</div>
+                <div class="chart-wrapper">
+                  <canvas id="fe-chart-canvas"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: AGI Technology Spec & Math -->
+          <div class="panel-box box-spec-math">
+            <div class="box-header">
+              <div class="box-title">
+                <h3>MATEMATİKSEL ALTYAPI &amp; UÇ YAPAY ZEKA SPEC</h3>
+              </div>
+            </div>
+            <div class="spec-content">
+              <div class="math-block">
+                <h4>Varyasyonel Serbest Enerji (Free Energy Principle):</h4>
+                <div class="equation">
+                  \(F(q, s) = E_{q(\vartheta)}[\ln q(\vartheta) - \ln p(s, \vartheta)]\)
+                </div>
+                <p>Burada \(q(\vartheta)\) ajanın içsel bilişsel durumunu temsil eder. Ajan, duyusal verileri alıp eylem üreterek \(F\)'yi minimize eder.</p>
+              </div>
+
+              <!-- Bloch Sphere Canvas Box -->
+              <div class="bloch-sphere-box">
+                <div class="bloch-header">Kuantum Durum Uzayı (Bloch Küresi)</div>
+                <div class="bloch-canvas-container">
+                  <canvas id="bloch-canvas"></canvas>
+                </div>
+                <div class="bloch-stats" id="txt-bloch-coords">
+                  <span>|ψ⟩ Coords: θ=1.04, φ=0.78</span>
+                  <span>Kararlılık: %92.4</span>
+                </div>
+              </div>
+
+              <div class="math-block">
+                <h4>Kuantum Lindblad Master Denklemi:</h4>
+                <div class="equation">
+                  \(\dot{\rho} = -i[H, \rho] + \sum_{k} \left( L_k \rho L_k^\dagger - \frac{1}{2} \{L_k^\dagger L_k, \rho\} \right)\)
+                </div>
+                <p>Bilişsel sistemde karar verme süreçlerindeki kuantum dalgalanmalarını simüle etmek için kullanılır.</p>
+              </div>
+
+              <div class="spec-list">
+                <h4>C++ Deterministic Inference Specs:</h4>
+                <ul>
+                  <li><strong>Arena Memory Allocation:</strong> Sıfır "dynamic allocation overhead" garantisi.</li>
+                  <li><strong>Custom GELU &amp; SwiGLU:</strong> SIMD / AVX-512 el ile optimize edilmiş çekirdekler.</li>
+                  <li><strong>Sensor Fusion:</strong> Genişletilmiş Kalman Filtresi (EKF) matris işlemleri için optimize BLAS kütüphanesi.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PANEL 3: ARAT OMEGA EW -->
+      <section class="content-panel" id="panel-omega">
+        <div class="omega-grid">
+          
+          <!-- Column 1: SDR Spectrum Analyzer -->
+          <div class="panel-box box-spectrum">
+            <div class="box-header">
+              <div class="box-title">
+                <span class="status-dot dot-red blinking" id="jamming-status-dot"></span>
+                <h3 id="spectrum-box-title">SDR SPEKTRUM ANALİZÖRÜ (RF SPECTRUM)</h3>
+              </div>
+              <div class="box-actions">
+                <button class="btn btn-sm btn-danger" id="btn-jamming-toggle">AKTİF ALDATMA / KARİŞTİRMA (JAMMING)</button>
+              </div>
+            </div>
+            <div class="canvas-container">
+              <canvas id="spectrum-canvas"></canvas>
+              <div class="spectrogram-container">
+                <canvas id="spectrogram-canvas"></canvas>
+              </div>
+            </div>
+            <div class="spectrum-controls-row">
+              <div class="control-col">
+                <label for="range-noise-floor">Gürültü Tabanı (dBm)</label>
+                <input type="range" id="range-noise-floor" min="-120" max="-40" value="-90">
+              </div>
+              <div class="control-col">
+                <label for="select-signal-type">Tespit Edilen Sinyal Türü</label>
+                <select id="select-signal-type">
+                  <option value="fhss">FHSS (Frekans Atlamalı)</option>
+                  <option value="bpsk">BPSK (Askeri Haberleşme)</option>
+                  <option value="qpsk">QPSK (Radar Telemetri)</option>
+                  <option value="lpi">LPI (Düşük Yakalanma Olasılıklı Radar)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: OODA Loop Decision Engine -->
+          <div class="panel-box box-ooda">
+            <div class="box-header">
+              <div class="box-title">
+                <span class="status-dot dot-amber"></span>
+                <h3>COGNITIVE OODA LOOP DECISION ENGINE</h3>
+              </div>
+              <div class="box-actions">
+                <span class="badge badge-warning" id="ooda-state-badge">ORIENT STATE</span>
+              </div>
+            </div>
+            <div class="ooda-diagram-container">
+              <div class="ooda-steps-grid">
+                
+                <div class="ooda-step active" id="step-observe">
+                  <div class="step-num">O</div>
+                  <div class="step-name">OBSERVE</div>
+                  <div class="step-desc">Wigner-Ville Dağılımı Spektrum Tarama</div>
+                  <div class="step-data" id="ooda-obs-data">Tarama Frekansı: 2.45 GHz</div>
+                </div>
+
+                <div class="ooda-step" id="step-orient">
+                  <div class="step-num">O</div>
+                  <div class="step-name">ORIENT</div>
+                  <div class="step-desc">ResNet-1D / DenseNet Sinyal Sınıflandırma</div>
+                  <div class="step-data" id="ooda-ori-data">Tespit: FHSS (%98.6)</div>
+                </div>
+
+                <div class="ooda-step" id="step-decide">
+                  <div class="step-num">D</div>
+                  <div class="step-name">DECIDE</div>
+                  <div class="step-desc">Bayesian Karar Destek Algoritması</div>
+                  <div class="step-data" id="ooda-dec-data">Öneri: DRFM Karıştırma</div>
+                </div>
+
+                <div class="ooda-step" id="step-act">
+                  <div class="step-num">A</div>
+                  <div class="step-name">ACT</div>
+                  <div class="step-desc">GaN Amplifikatörü Jamming Tetikleme</div>
+                  <div class="step-data" id="ooda-act-data">Güç: +43 dBm</div>
+                </div>
+
+              </div>
+            </div>
+            
+            <!-- Bayesian Decison Matrix UI -->
+            <div class="bayesian-matrix-box">
+              <h4>Bayesian Karar Matrisi Karşılaştırması (Strateji Seçimi)</h4>
+              <table class="bayesian-table">
+                <thead>
+                  <tr>
+                    <th>Karşı Strateji</th>
+                    <th>Beklenen Spektrum Hakimiyeti</th>
+                    <th>SWaP-C Maliyeti</th>
+                    <th>Bayesian Başarı Olasılığı</th>
+                  </tr>
+                </thead>
+                <tbody id="bayesian-table-body">
+                  <tr>
+                    <td>DRFM Karıştırma (Gürültü Barajı)</td>
+                    <td>0.89</td>
+                    <td>Orta</td>
+                    <td class="text-green text-bold">0.942</td>
+                  </tr>
+                  <tr>
+                    <td>Frekans Takip Çevrimli Karıştırma</td>
+                    <td>0.72</td>
+                    <td>Düşük</td>
+                    <td>0.681</td>
+                  </tr>
+                  <tr>
+                    <td>Mülti-Modlu Yalancı Hedef Üretimi</td>
+                    <td>0.95</td>
+                    <td>Yüksek (Yoğun CPU)</td>
+                    <td>0.895</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Column 3: SWaP-C / Hardware Telemetry -->
+          <div class="panel-box box-telemetry">
+            <div class="box-header">
+              <div class="box-title">
+                <h3>SWaP-C GÖMÜLÜ TELEMETRİ MONİTÖRÜ</h3>
+              </div>
+            </div>
+            
+            <div class="telemetry-widgets">
+              
+              <!-- Jetson Orin Load Card -->
+              <div class="telemetry-card">
+                <div class="card-header-sm">
+                  <span>Jetson Orin Nano (SDR Controller)</span>
+                  <span id="txt-orin-temp" class="text-bold">42 °C</span>
+                </div>
+                <div class="bar-progress-container">
+                  <div class="bar-progress" id="bar-orin-load" style="width: 45%;"></div>
+                </div>
+                <div class="card-footer-sm">
+                  <span>CPU/GPU Yükü: <span id="txt-orin-load">45%</span></span>
+                  <button class="btn btn-xs btn-outline" id="btn-stress-test">Yük Testi</button>
+                </div>
+              </div>
+
+              <!-- GaN Amp Power Card -->
+              <div class="telemetry-card">
+                <div class="card-header-sm">
+                  <span>GaN Güç Amplifikatör Sıcaklığı</span>
+                  <span id="txt-gan-temp" class="text-bold">38 °C</span>
+                </div>
+                <div class="bar-progress-container">
+                  <div class="bar-progress bg-amber" id="bar-gan-power" style="width: 12%;"></div>
+                </div>
+                <div class="card-footer-sm">
+                  <span>RF Çıkış Gücü: <span id="txt-gan-power">12W</span></span>
+                  <span>Çalışma Gerilimi: 48V DC</span>
+                </div>
+              </div>
+
+              <!-- Active Peltier Liquid Cooling Status -->
+              <div class="telemetry-card cooling-card">
+                <div class="cooling-status-row">
+                  <div class="cooling-icon">
+                    <svg viewBox="0 0 24 24" id="svg-fan" class="rotating-fan"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13.59l-1.41 1.41C15.11 8.7 16 9.75 16 11H8c0-1.25.89-2.3 1.83-3.17l-1.41-1.41C7.14 7.64 6 9.68 6 12c0 3.31 2.69 6 6 6s6-2.69 6-6c0-2.32-1.14-4.36-2.41-5.59z"/></svg>
+                  </div>
+                  <div class="cooling-text">
+                    <h4>Aktif Peltier Sıvı Soğutma</h4>
+                    <p id="txt-peltier-status">DURUM: STANDBY (Beklemede)</p>
+                  </div>
+                  <span class="status-indicator-light" id="light-peltier"></span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PANEL 4: MISSION CONTROL -->
+      <section class="content-panel" id="panel-mission">
+        <div class="mission-grid-layout">
+          
+          <!-- Left Column: Scenario Selector & Control -->
+          <div class="panel-box box-mission-selector">
+            <div class="box-header">
+              <div class="box-title">
+                <span class="status-dot dot-amber blinking"></span>
+                <h3>OPERASYONEL GÖREV SEÇİMİ</h3>
+              </div>
+            </div>
+            
+            <div class="mission-selection-form">
+              <label for="select-mission-type" class="form-label">Aktif Görev Senaryosu</label>
+              <select id="select-mission-type" class="form-select">
+                <option value="ew-patrol">Sınır Ötesi Elektronik Harp Devriyesi (OMEGA)</option>
+                <option value="swarm-avoid">AGI Otonom Sürü İHA Koordinasyon Görevi</option>
+                <option value="quantum-decide">Kuantum Bilişsel Durum ve Karar Destek Simülasyonu</option>
+              </select>
+
+              <div class="mission-details-card" id="mission-info-display">
+                <h4 id="mission-details-title">OMEGA Spektrum Devriyesi</h4>
+                <p id="mission-details-text">İHA platformumuz sınır hattında uçuş gerçekleştirirken, düşman hava savunma radarları (LPI radar) tespit edilecek ve Bayesian karar mekanizması tarafından otomatik karıştırma (Jamming) başlatılacaktır.</p>
+              </div>
+
+              <div class="mission-actions-row">
+                <button class="btn btn-primary btn-block" id="btn-start-mission">GÖREVİ BAŞLAT</button>
+                <button class="btn btn-secondary btn-block" id="btn-stop-mission" disabled>DURDUR</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Mission Progress Timeline -->
+          <div class="panel-box box-mission-timeline">
+            <div class="box-header">
+              <div class="box-title">
+                <h3>GÖREV TESPİT VE AKIŞ ZAMAN ÇİZELGESİ (REAL-TIME TIMELINE)</h3>
+              </div>
+              <div class="box-actions">
+                <span id="mission-progress-percent" class="badge badge-info">DURDURULDU</span>
+              </div>
+            </div>
+            
+            <div class="timeline-container" id="timeline-steps-list">
+              <!-- Steps injected dynamically by app.js -->
+              <div class="timeline-empty-state">
+                <p>Simülasyonu başlatmak için soldaki panelden görev seçip "GÖREVİ BAŞLAT" butonuna basınız.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Event Logs Console -->
+    <footer class="system-logs-console">
+      <div class="console-header">
+        <div class="console-title">
+          <svg viewBox="0 0 24 24" class="icon-console"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 12H4v-2h8v2zm8 0h-6v-2h6v2zm0-4H4V8h16v4z"/></svg>
+          <h4>ARAT LABS - MERKEZİ TELEMETRİ KONSOLU</h4>
+        </div>
+        <div class="console-controls">
+          <button class="btn btn-xs" id="btn-clear-logs">Konsolu Temizle</button>
+        </div>
+      </div>
+      
+      <!-- Logs Rows Container -->
+      <div class="console-body" id="console-log-rows">
+        <!-- Log rows injected by JavaScript -->
+      </div>
+      
+      <!-- CLI Command Input Line -->
+      <div class="console-input-line">
+        <span class="prompt">></span>
+        <input type="text" id="cli-input" placeholder="Sistem komutu girin... (örn: /help, /jam, /stress, /status)" autocomplete="off">
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- MathJax for rendering LaTeX mathematical expressions -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+  <!-- JavaScript Code -->
+  <script src="app.js"></script>
+</body>
+</html>
