@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBlochSphere();
   initCliConsole();
   initMissionControl();
+  initEasterEgg();
   
   // Initial logs
   addLog('SYSTEM', 'Tüm bilişsel modüller başarıyla başlatıldı. Portal çevrim içi.');
@@ -1469,4 +1470,42 @@ function initMissionControl() {
     
     addLog('GÖREV KONTROL', 'Göre simülasyonu kullanıcı tarafından manuel olarak sonlandırıldı.');
   }
+}
+
+/* ==========================================
+   CYBER OVERDRIVE MODE (EASTER EGG)
+   ========================================== */
+function initEasterEgg() {
+  const banner = document.getElementById('banner-click-trigger');
+  if (!banner) return;
+
+  banner.addEventListener('click', () => {
+    const isCyber = document.body.classList.toggle('cyber-mode');
+    
+    const agiIndicator = document.getElementById('agi-indicator');
+    const spectrumIndicator = document.getElementById('spectrum-indicator');
+
+    if (isCyber) {
+      agiIndicator.textContent = "MATRIX OVERRIDE";
+      agiIndicator.className = "status-value text-green";
+      
+      if (spectrumIndicator.textContent !== "JAMMING ON") {
+        spectrumIndicator.textContent = "CYBER LOCK";
+        spectrumIndicator.className = "status-value text-green";
+      }
+
+      addLog('SYSTEM', 'MATRIX OVERDRIVE: Bilişsel arayüz emülasyonu yeşil matris moduna geçirildi.');
+      addLog('SYSTEM', 'Gelişmiş veri süzgeçleri ve tarama çizgileri aktif edildi.');
+    } else {
+      agiIndicator.textContent = "OPTIMAL";
+      agiIndicator.className = "status-value text-blue";
+      
+      if (spectrumIndicator.textContent === "CYBER LOCK") {
+        spectrumIndicator.textContent = "SECURE";
+        spectrumIndicator.className = "status-value text-green";
+      }
+
+      addLog('SYSTEM', 'Arayüz varsayılan fütüristik mavi/kırmızı moda döndürüldü.');
+    }
+  });
 }
