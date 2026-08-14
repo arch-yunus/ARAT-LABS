@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNeuralNetwork();
   initActiveInferenceSim();
   initSdrSpectrum();
+  initSdrAudio();
   initOodaEngine();
   initTelemetry();
   initBlochSphere();
@@ -567,6 +568,47 @@ function initActiveInferenceSim() {
     addLog('AGI SIMULATION', 'Yeni engeller yerleştirildi. Ajan çıkarım haritasını güncelliyor.');
   });
 
+  window.clearAllObstacles = function() {
+    obstacles = [];
+    resetSimulation();
+  };
+
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    
+    const gridX = Math.floor((clickX / rect.width) * gridCount);
+    const gridY = Math.floor((clickY / rect.height) * gridCount);
+    
+    if (gridX >= 0 && gridX < gridCount && gridY >= 0 && gridY < gridCount) {
+      if (e.shiftKey) {
+        if (gridX === agent.x && gridY === agent.y) return;
+        target = { x: gridX, y: gridY };
+        obstacles = obstacles.filter(o => o.x !== gridX || o.y !== gridY);
+        addLog('AGI SIMULATION', `Hedef koordinatı güncellendi: (${gridX}, ${gridY})`);
+        resetSimulation();
+      } else if (e.ctrlKey) {
+        if (gridX === target.x && gridY === target.y) return;
+        agent = { x: gridX, y: gridY };
+        obstacles = obstacles.filter(o => o.x !== gridX || o.y !== gridY);
+        addLog('AGI SIMULATION', `Ajan koordinatı güncellendi: (${gridX}, ${gridY})`);
+        resetSimulation();
+      } else {
+        if ((gridX === agent.x && gridY === agent.y) || (gridX === target.x && gridY === target.y)) return;
+        const idx = obstacles.findIndex(o => o.x === gridX && o.y === gridY);
+        if (idx !== -1) {
+          obstacles.splice(idx, 1);
+          addLog('AGI SIMULATION', `Engel kaldırıldı: (${gridX}, ${gridY})`);
+        } else {
+          obstacles.push({ x: gridX, y: gridY });
+          addLog('AGI SIMULATION', `Yeni engel eklendi: (${gridX}, ${gridY})`);
+        }
+        resetSimulation();
+      }
+    }
+  });
+
   resize();
   resetSimulation();
 }
@@ -758,6 +800,10 @@ function initSdrSpectrum() {
 
       addLog('OMEGA EW', 'Jamming durduruldu. Spektrum güvenli dinleme moduna döndü.');
     }
+
+    if (window.updateSdrAudio) {
+      window.updateSdrAudio();
+    }
   }
 
   globalToggleJamming = toggleJamming; // Expose
@@ -785,6 +831,183 @@ function initSdrSpectrum() {
 
   resize();
   tick();
+}
+
+/* ==========================================
+   OMEGA EW: SDR WEB AUDIO DEMODULATOR
+   ========================================== */
+window.audioPlaying = false;
+function initSdrAudio() {
+  const audioBtn = document.getElementById('btn-audio-toggle');
+  const audioWave = document.getElementById('audio-wave');
+  if (!audioBtn || !audioWave) return;
+
+  const svgAudio = document.getElementById('svg-audio');
+  
+  const svgMuted = '<svg id="svg-audio" class="audio-icon" viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;"><path d="M3.63 3.63L2.36 4.9 7.46 10H4v4h4l4 4v-4.17l4.08 4.08c-.73.44-1.53.77-2.38.97v2.02c1.39-.27 2.68-.86 3.79-1.68l2.1 2.1 1.27-1.27L3.63 3.63zM10 15.17L8.83 14H6v-2h2.83l1.17 1.17v2zM12 4L9.91 6.09 12 8.18V4zm4.5 8c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71z"/></svg>';
+  const svgPlaying = '<svg id="svg-audio" class="audio-icon" viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+
+  let audioCtx = null;
+  let oscillators = [];
+  let gainNode = null;
+  let noiseSource = null;
+  let fhssInterval = null;
+
+  function setupAudioContext() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gainNode.connect(audioCtx.destination);
+    }
+  }
+
+  function stopAllSounds() {
+    oscillators.forEach(osc => {
+      try { osc.stop(); } catch(e) {}
+    });
+    oscillators = [];
+    
+    if (noiseSource) {
+      try { noiseSource.stop(); } catch(e) {}
+      noiseSource = null;
+    }
+    
+    if (fhssInterval) {
+      clearInterval(fhssInterval);
+      fhssInterval = null;
+    }
+  }
+
+  function playSignalSound(type, isJamming) {
+    if (!window.audioPlaying) return;
+    setupAudioContext();
+    
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    stopAllSounds();
+
+    if (isJamming) {
+      const bufferSize = 2 * audioCtx.sampleRate;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2.0 - 1.0;
+      }
+      
+      noiseSource = audioCtx.createBufferSource();
+      noiseSource.buffer = noiseBuffer;
+      noiseSource.loop = true;
+      
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+      
+      noiseSource.connect(filter);
+      filter.connect(gainNode);
+      
+      noiseSource.start();
+      return;
+    }
+
+    if (type === 'bpsk') {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+      osc.connect(gainNode);
+      osc.start();
+      oscillators.push(osc);
+    } 
+    else if (type === 'qpsk') {
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      osc1.type = 'sine';
+      osc2.type = 'sine';
+      
+      osc1.frequency.setValueAtTime(500, audioCtx.currentTime);
+      osc2.frequency.setValueAtTime(504, audioCtx.currentTime);
+      
+      osc1.connect(gainNode);
+      osc2.connect(gainNode);
+      
+      osc1.start();
+      osc2.start();
+      oscillators.push(osc1, osc2);
+    } 
+    else if (type === 'fhss') {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.connect(gainNode);
+      osc.start();
+      oscillators.push(osc);
+
+      const frequencies = [250, 400, 300, 600, 800, 500, 1000, 150];
+      let hopIndex = 0;
+      
+      fhssInterval = setInterval(() => {
+        if (!window.audioPlaying) return;
+        const targetFreq = frequencies[hopIndex];
+        osc.frequency.setValueAtTime(targetFreq, audioCtx.currentTime);
+        hopIndex = (hopIndex + 1) % frequencies.length;
+      }, 250);
+    } 
+    else if (type === 'lpi') {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(90, audioCtx.currentTime);
+      
+      const lfo = audioCtx.createOscillator();
+      lfo.frequency.setValueAtTime(0.5, audioCtx.currentTime);
+      const lfoGain = audioCtx.createGain();
+      lfoGain.gain.setValueAtTime(25, audioCtx.currentTime);
+      
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      
+      osc.connect(gainNode);
+      
+      lfo.start();
+      osc.start();
+      oscillators.push(osc, lfo);
+    }
+  }
+
+  function updateAudioTrigger() {
+    const type = document.getElementById('select-signal-type').value;
+    const spectrumIndicator = document.getElementById('spectrum-indicator');
+    const jammingOn = spectrumIndicator.textContent.includes('JAMMING');
+    playSignalSound(type, jammingOn);
+  }
+
+  audioBtn.addEventListener('click', () => {
+    window.audioPlaying = !window.audioPlaying;
+    
+    if (window.audioPlaying) {
+      setupAudioContext();
+      audioBtn.innerHTML = svgPlaying + ' <span>SESİ KAPA</span>';
+      audioBtn.classList.remove('btn-outline');
+      audioBtn.classList.add('btn-primary');
+      audioBtn.classList.remove('pulse-btn');
+      audioWave.classList.add('audio-playing');
+      addLog('OMEGA SDR', 'SDR Demodülatör ses çıkışı açıldı.');
+      updateAudioTrigger();
+    } else {
+      audioBtn.innerHTML = svgMuted + ' <span>SESİ AÇ</span>';
+      audioBtn.classList.remove('btn-primary');
+      audioBtn.classList.add('btn-outline');
+      audioWave.classList.remove('audio-playing');
+      stopAllSounds();
+      addLog('OMEGA SDR', 'SDR Demodülatör ses çıkışı kapatıldı.');
+    }
+  });
+
+  window.updateSdrAudio = function() {
+    if (window.audioPlaying) {
+      updateAudioTrigger();
+    }
+  };
 }
 
 /* ==========================================
@@ -1071,6 +1294,37 @@ function initBlochSphere() {
   let rotationAngle = 0;
   let theta = 1.047; // Latitude (0 to PI)
   let phi = 0.785;   // Longitude (0 to 2PI)
+  let isDragging = false;
+  let previousMousePosition = { x: 0, y: 0 };
+
+  canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const rect = canvas.getBoundingClientRect();
+    const deltaX = e.clientX - previousMousePosition.x;
+    const deltaY = e.clientY - previousMousePosition.y;
+
+    phi = (phi - deltaX * 0.015) % (Math.PI * 2);
+    if (phi < 0) phi += Math.PI * 2;
+
+    theta = Math.max(0.01, Math.min(Math.PI - 0.01, theta + deltaY * 0.015));
+
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  window.setQuantumState = function(newTheta, newPhi) {
+    theta = Math.max(0.01, Math.min(Math.PI - 0.01, newTheta));
+    phi = newPhi % (Math.PI * 2);
+    if (phi < 0) phi += Math.PI * 2;
+  };
 
   function resize() {
     const parent = canvas.parentElement;
@@ -1120,10 +1374,10 @@ function initBlochSphere() {
     ctx.fillText('|1⟩', centerX - 4, centerY + radius + 12);
 
     // 4. Calculate Vector Point Coordinates from Spherical Coordinates
-    // Evolve rotationAngle slightly over time
-    rotationAngle += 0.01;
+    if (!isDragging) {
+      rotationAngle += 0.005;
+    }
 
-    // Modify angles slightly if quantum noise is checked
     let currentTheta = theta;
     let currentPhi = phi + rotationAngle;
     if (document.getElementById('chk-quantum-noise').checked) {
@@ -1136,15 +1390,26 @@ function initBlochSphere() {
     const y = Math.sin(currentTheta) * Math.sin(currentPhi);
     const z = Math.cos(currentTheta);
 
-    // Project coordinates onto 2D canvas coordinates
-    // We tilt the sphere slightly: Y axis goes into the screen, X goes right, Z goes up
     const px = centerX + x * radius;
-    const py = centerY - z * radius + y * radius * 0.15; // slightly flattened perspective
+    const py = centerY - z * radius + y * radius * 0.15;
 
     // Update text indicators
     document.getElementById('txt-bloch-coords').innerHTML = `
       <span>|ψ⟩ Coords: θ=${currentTheta.toFixed(2)}, φ=${(currentPhi % (Math.PI*2)).toFixed(2)}</span>
       <span>Kararlılık: ${document.getElementById('chk-quantum-noise').checked ? '%42.8' : '%94.5'}</span>
+    `;
+
+    // Amplitudes
+    const alphaReal = Math.cos(currentTheta / 2);
+    const betaReal = Math.cos(currentPhi) * Math.sin(currentTheta / 2);
+    const betaImag = Math.sin(currentPhi) * Math.sin(currentTheta / 2);
+
+    const sign = betaImag >= 0 ? '+' : '-';
+    const absVal = Math.abs(betaImag).toFixed(3);
+    
+    document.getElementById('txt-bloch-amplitudes').innerHTML = `
+      <span>α: ${alphaReal.toFixed(3)} | β: ${betaReal.toFixed(3)} ${sign} ${absVal}i</span>
+      <span>|ψ⟩ = ${alphaReal.toFixed(2)}|0⟩ + (${betaReal.toFixed(2)}${sign}${absVal}i)|1⟩</span>
     `;
 
     // 5. Draw vector line and arrowhead
@@ -1216,6 +1481,11 @@ function initCliConsole() {
         addLog('SYSTEM', '  <span style="color:#00f2fe">/stress</span> - CPU/GPU yük stres testini tetikler.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/reset</span> - AGI active inference ajanını başlangıç noktasına döndürür.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/status</span> - Sistem telemetrisi ve çalışma istatistikleri raporu verir.');
+        addLog('SYSTEM', '  <span style="color:#00f2fe">/theme [matrix|default|fusion|nebula]</span> - Arayüzün neon rengini/temasını değiştirir.');
+        addLog('SYSTEM', '  <span style="color:#00f2fe">/audio [on|off]</span> - SDR ses demodülatörünü açar/kapatır.');
+        addLog('SYSTEM', '  <span style="color:#00f2fe">/quantum &lt;theta&gt; &lt;phi&gt;</span> - Bloch küresi durumunu ayarlar (örnek: /quantum 1.04 0.78).');
+        addLog('SYSTEM', '  <span style="color:#00f2fe">/obstacle [clear|random]</span> - Çıkarım engellerini temizler veya karıştırır.');
+        addLog('SYSTEM', '  <span style="color:#00f2fe">/about</span> - ARAT LABS hakkında detayları gösterir.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/clear</span> - Tüm terminal satırlarını temizler.');
         break;
 
@@ -1242,6 +1512,83 @@ function initCliConsole() {
         } else {
           addLog('SYSTEM', 'Hata: AGI çıkarım motoru aktif değil.');
         }
+        break;
+
+      case '/theme':
+        const themeName = arg.trim().toLowerCase();
+        if (['default', 'matrix', 'fusion', 'nebula'].includes(themeName)) {
+          document.body.classList.remove('theme-fusion', 'theme-nebula', 'cyber-mode');
+          if (themeName === 'matrix') {
+            document.body.classList.add('cyber-mode');
+          } else if (themeName !== 'default') {
+            document.body.classList.add(`theme-${themeName}`);
+          }
+          addLog('SYSTEM', `Arayüz teması başarıyla değiştirildi: [${themeName.toUpperCase()}]`);
+        } else {
+          addLog('SYSTEM', 'Hata: Geçersiz tema ismi. Seçenekler: default, matrix, fusion, nebula');
+        }
+        break;
+
+      case '/audio':
+        const audioState = arg.trim().toLowerCase();
+        const audioBtn = document.getElementById('btn-audio-toggle');
+        if (audioState === 'on') {
+          if (!window.audioPlaying && audioBtn) audioBtn.click();
+        } else if (audioState === 'off') {
+          if (window.audioPlaying && audioBtn) audioBtn.click();
+        } else {
+          addLog('SYSTEM', 'Kullanım: /audio [on|off]');
+        }
+        break;
+
+      case '/quantum':
+        const qParts = arg.split(' ');
+        if (qParts.length === 2) {
+          const tVal = parseFloat(qParts[0]);
+          const pVal = parseFloat(qParts[1]);
+          if (!isNaN(tVal) && !isNaN(pVal)) {
+            if (window.setQuantumState) {
+              window.setQuantumState(tVal, pVal);
+              addLog('SYSTEM', `Kuantum Bloch durum koordinatları el ile güncellendi: θ=${tVal.toFixed(2)}, φ=${pVal.toFixed(2)}`);
+            } else {
+              addLog('SYSTEM', 'Hata: Bloch küresi başlatılamadı.');
+            }
+          } else {
+            addLog('SYSTEM', 'Hata: Koordinatlar sayısal değer olmalıdır.');
+          }
+        } else {
+          addLog('SYSTEM', 'Kullanım: /quantum <theta> <phi> (örnek: /quantum 1.04 0.78)');
+        }
+        break;
+
+      case '/obstacle':
+        const obsAction = arg.trim().toLowerCase();
+        if (obsAction === 'clear') {
+          if (window.clearAllObstacles) {
+            window.clearAllObstacles();
+            addLog('SYSTEM', 'AGI simülatöründeki tüm engeller kaldırıldı.');
+          }
+        } else if (obsAction === 'random' || obsAction === '') {
+          if (window.redistributeObstacles) {
+            window.redistributeObstacles(6);
+            addLog('SYSTEM', 'Engeller rastgele olarak yeniden dağıtıldı.');
+          }
+        } else {
+          addLog('SYSTEM', 'Kullanım: /obstacle [clear|random]');
+        }
+        break;
+
+      case '/about':
+        addLog('SYSTEM', '<pre style="color:var(--color-agi); font-family:monospace; line-height: 1.1; font-size: 0.65rem;">' +
+          '    ___    ____  ___  ______   __    ___    ____  _____\n' +
+          '   /   |  / __ \\/   |/_  __/  / /   /   |  / __ )/ ___/\n' +
+          '  / /| | / /_/ / /| |  / /   / /   / /| | / __  |\\__ \\ \n' +
+          ' / ___ |/ _, _/ ___ | / /   / /___/ ___ |/ /_/ /___/ / \n' +
+          '/_/  |_/_/ |_/_/  |_|/_/   /_____/_/  |_/_____//____/  \n' +
+          '                                                       </pre>');
+        addLog('SYSTEM', '<b>ARAT LABS - Bilişsel Kontrol Paneli v2.0</b>');
+        addLog('SYSTEM', 'Gelişmiş Active Inference, Kuantum Biliş ve Bilişsel Elektronik Harp Simülasyon Ekosistemi.');
+        addLog('SYSTEM', 'Tüm hakları saklıdır © 2026 Arat Labs Enterprise.');
         break;
 
       case '/status':
@@ -1316,6 +1663,18 @@ function initMissionControl() {
         { time: 'T+9.0s', title: 'Karar Matrisi Stabil', desc: 'Karar alma olasılığı %94.2 olasılıkla nihai duruma tünelledi. AGI orkestrasyonu tehdidi ayırt etti.' },
         { time: 'T+12.0s', title: 'Nihai Karar Çıktısı', desc: 'Belirsizlik altında en doğru lojistik karar otonom verildi. Görev tamamlandı.' }
       ]
+    },
+    'quantum-tunnel-jam': {
+      title: 'Bilişsel Spektrum Tünelleme ve Elektronik Taarruz',
+      text: 'Çok parazitli bir muharebe sahasında, İHA bilişsel sistemi Lindblad kuantum sönümlemesiyle karar alacak, hedefe giden yolda aktif çıkarımla engelleri aşacak ve GaN amplifikatörünü overdrive modunda çalıştırarak elektronik taarruz (jamming) başlatacaktır.',
+      steps: [
+        { time: 'T+0.0s', title: 'Karmaşık Görev Başlatıldı', desc: 'Bilişsel Spektrum Tünelleme ve Taarruz görevi kilitlendi. Spektrum analizi aktif.' },
+        { time: 'T+3.0s', title: 'Kuantum Karar Stabilizasyonu', desc: 'Muharebe alanındaki yoğun elektromanyetik gürültü algılandı. Lindblad denklemi ile karar alma süreci kararlı Bloch küresine tünelledi.' },
+        { time: 'T+6.0s', title: 'Aktif Çıkarım İle Rota Çizimi', desc: 'Engellerin arasından hedefe ulaşacak en düşük varyasyonel serbest enerjili rotasyon hesaplandı ve ajan ilerlemeye başladı.' },
+        { time: 'T+9.0s', title: 'GaN Jammer Overdrive Tetiği', desc: 'Tehdit sinyali tespit edildi. Jamming vericisi devreye alındı. Telemetride RF çıkış gücü overdrive seviyesi olan +48 dBm\'e ulaştı.' },
+        { time: 'T+12.0s', title: 'Peltier Isı Eşleme Modu', desc: 'GaN amplifikatör sıcaklığı 78°C sınırını aştı. Peltier soğutma fanı maksimum hızda döndürülmeye başlandı.' },
+        { time: 'T+15.0s', title: 'Harp Alanı Baskılandı', desc: 'Karşı spektrum tamamen köreltildi, engeller aşıldı ve otonom İHA hedefine vardı. Sistem güvenli standby moduna çekildi.' }
+      ]
     }
   };
 
@@ -1354,7 +1713,7 @@ function initMissionControl() {
     // Synchronize views
     if (spec === missionSpecs['ew-patrol']) {
       switchTab('omega');
-    } else if (spec === missionSpecs['swarm-avoid'] || spec === missionSpecs['quantum-decide']) {
+    } else {
       switchTab('agi');
     }
 
@@ -1448,6 +1807,25 @@ function initMissionControl() {
       } else if (stepIdx === 3) {
         // Stabilization
         document.getElementById('chk-quantum-noise').checked = false;
+      }
+    }
+
+    const isTunnelJam = spec === missionSpecs['quantum-tunnel-jam'];
+    if (isTunnelJam) {
+      if (stepIdx === 1) {
+        document.getElementById('chk-quantum-noise').checked = true;
+      } else if (stepIdx === 2) {
+        document.getElementById('chk-quantum-noise').checked = false;
+        if (window.redistributeObstacles) window.redistributeObstacles(5);
+      } else if (stepIdx === 3) {
+        switchTab('omega');
+        if (globalToggleJamming) globalToggleJamming(true);
+        window.ganPower = 48;
+      } else if (stepIdx === 4) {
+        window.orinTemp = 82;
+        window.ganTemp = 78;
+      } else if (stepIdx === 5) {
+        if (globalToggleJamming) globalToggleJamming(false);
       }
     }
   }

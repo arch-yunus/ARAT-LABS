@@ -188,10 +188,11 @@
               <div class="sim-controls">
                 <p class="sim-desc">
                   Ajan, çevresel belirsizliği (serbest enerjiyi) minimize etmeye çalışır. Hedefe ulaşmak için "sürpriz" olasılığını azaltan yollar arar.
+                  <br><span style="color: var(--color-agi); opacity: 0.85; font-size: 0.65rem;">* Grid'e tıklayarak Engel koyun. Shift+Tık: Hedef, Ctrl+Tık: Ajan yerleştirir.</span>
                 </p>
                 <div class="control-row">
                   <button class="btn btn-sm btn-primary" id="btn-sim-reset">Ajanı Sıfırla</button>
-                  <button class="btn btn-sm btn-secondary" id="btn-sim-obstacle">Engel Ekle/Kaldır</button>
+                  <button class="btn btn-sm btn-secondary" id="btn-sim-obstacle">Engelleri Karıştır</button>
                   <label class="toggle-container">
                     <input type="checkbox" id="chk-quantum-noise">
                     <span class="toggle-label">Kuantum Bilişsel Gürültü</span>
@@ -231,12 +232,17 @@
               <!-- Bloch Sphere Canvas Box -->
               <div class="bloch-sphere-box">
                 <div class="bloch-header">Kuantum Durum Uzayı (Bloch Küresi)</div>
+                <div class="bloch-info-tip" style="font-size: 0.6rem; color: var(--text-muted); text-align: center; margin-bottom: 5px;">Sürükleyerek durumu değiştirin</div>
                 <div class="bloch-canvas-container">
-                  <canvas id="bloch-canvas"></canvas>
+                  <canvas id="bloch-canvas" style="cursor: grab;"></canvas>
                 </div>
                 <div class="bloch-stats" id="txt-bloch-coords">
                   <span>|ψ⟩ Coords: θ=1.04, φ=0.78</span>
                   <span>Kararlılık: %92.4</span>
+                </div>
+                <div class="bloch-amplitudes" id="txt-bloch-amplitudes" style="font-family: monospace; font-size: 0.65rem; color: var(--color-agi); padding: 5px; background: rgba(0,0,0,0.2); border-radius: 4px; display: flex; flex-direction: column; gap: 2px;">
+                  <span>α: 0.866 + 0.000i | β: 0.354 + 0.354i</span>
+                  <span>|ψ⟩ = 0.87|0⟩ + (0.35+0.35i)|1⟩</span>
                 </div>
               </div>
 
@@ -296,6 +302,18 @@
                   <option value="qpsk">QPSK (Radar Telemetri)</option>
                   <option value="lpi">LPI (Düşük Yakalanma Olasılıklı Radar)</option>
                 </select>
+              </div>
+              <div class="control-col col-audio" style="display: flex; align-items: center; gap: 8px; margin-top: 15px;">
+                <button class="btn btn-sm btn-outline" id="btn-audio-toggle" style="height: fit-content; display: flex; align-items: center; gap: 6px;">
+                  <svg id="svg-audio" class="audio-icon" viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;"><path d="M3.63 3.63L2.36 4.9 7.46 10H4v4h4l4 4v-4.17l4.08 4.08c-.73.44-1.53.77-2.38.97v2.02c1.39-.27 2.68-.86 3.79-1.68l2.1 2.1 1.27-1.27L3.63 3.63zM10 15.17L8.83 14H6v-2h2.83l1.17 1.17v2zM12 4L9.91 6.09 12 8.18V4zm4.5 8c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71z"/></svg>
+                  <span>SESİ AÇ</span>
+                </button>
+                <div class="audio-wave-visualizer" id="audio-wave">
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -460,6 +478,7 @@
                 <option value="ew-patrol">Sınır Ötesi Elektronik Harp Devriyesi (OMEGA)</option>
                 <option value="swarm-avoid">AGI Otonom Sürü İHA Koordinasyon Görevi</option>
                 <option value="quantum-decide">Kuantum Bilişsel Durum ve Karar Destek Simülasyonu</option>
+                <option value="quantum-tunnel-jam">Bilişsel Spektrum Tünelleme ve Elektronik Taarruz</option>
               </select>
 
               <div class="mission-details-card" id="mission-info-display">
