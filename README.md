@@ -1,4 +1,4 @@
-��<div align="center">
+<div align="center">
   <img src="assets/banner.jpg" alt="ARAT Labs Banner" width="450" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
   
   # ARAT LABS
@@ -21,7 +21,7 @@
 
 ## 🌌 Vizyonumuz ve Teknoloji Felsefemiz
 
-**Arat Labs**, mevcut yapay zeka paradigmasının sınırlarını reddeden, çok disiplinli bir mühendislik ve araştırma şirketidir. Bizim inancımıza göre zeka; devasa veri merkezlerinde hapsolmuş, yalnızca istatistiksel olasılık dağılımları üreten monolitik bir yapı olamaz. Gerçek zeka; çevresiyle etkileşime giren, belirsizlik (sürprizanında hayatta kalabilen ve kısıtlı donanım kaynaklarıyla dahi otonom kararlar alabilen **"bedenlenmiş" (embodied)** bir sistem olmalıdır.
+**Arat Labs**, mevcut yapay zeka paradigmasının sınırlarını reddeden, çok disiplinli bir mühendislik ve araştırma şirketidir. Bizim inancımıza göre zeka; devasa veri merkezlerinde hapsolmuş, yalnızca istatistiksel olasılık dağılımları üreten monolitik bir yapı olamaz. Gerçek zeka; çevresiyle etkileşime giren, belirsizlik (sürpriz) anında hayatta kalabilen ve kısıtlı donanım kaynaklarıyla dahi otonom kararlar alabilen **"bedenlenmiş" (embodied)** bir sistem olmalıdır.
 
 Arat Labs çatısı altında teknoloji felsefesi ile sistem mimarisini birleştiriyoruz. Hedefimiz, dijital sınırları aşarak fiziksel dünyaya ve elektromanyetik spektruma hükmeden, "kendi varlığının farkında olan" otonom sistemler ve bilişsel mimariler inşa etmektir. Bilimin kapalı kapılar ardında değil, şeffaf, modüler ve çevik bir mühendislik kültürüyle ilerlediğine inanıyoruz.
 
@@ -32,7 +32,7 @@ Arat Labs çatısı altında teknoloji felsefesi ile sistem mimarisini birleşti
 Şirketimizin AR-GE ekosistemi, donanım ve yazılım bütünlüğünü sağlamak üzere tasarlanmış, birbirini besleyen iki ana koldan oluşur:
 
 ### 🧠 1. Arat AGI Research (Yapay Genel Zeka Araştırmaları)
-AGI araştırmalarımız; ajanların çevresel belirsizliği minimize etmesini hedefleyen **Serbest Enerji Prensibi (Free Energy Principle)**, Hiyerarşik Aktif Çıkarım (Active Inferenceve Kuantum Biliş (Quantum Cognitionteorilerine dayanır. Zekanın donanım sınırlarına hapsolmadan otonom olarak var olabilmesi için kavramsal ve matematiksel temelleri burada kodluyoruz.
+AGI araştırmalarımız; ajanların çevresel belirsizliği minimize etmesini hedefleyen **Serbest Enerji Prensibi (Free Energy Principle)**, Hiyerarşik Aktif Çıkarım (Active Inference) ve Kuantum Biliş (Quantum Cognition) teorilerine dayanır. Zekanın donanım sınırlarına hapsolmadan otonom olarak var olabilmesi için kavramsal ve matematiksel temelleri burada kodluyoruz.
 
 *   **Bilişsel Orkestrasyon:** Belirli görevlerde uzmanlaşmış alt ajanların asenkron mikroservislerle iletişim kurduğu, vektörel hafıza yönetimi yapabilen "zihin ağları".
 *   **Edge AI (Uç Yapay Zeka):** CUDA/C++ altyapısında özel GELU/SwiGLU aktivasyon fonksiyonları ve gömülü sistemler için Arena bellek yöneticileriyle sıfır gecikmeli (low-latency) deterministik çıkarım.
@@ -40,11 +40,11 @@ AGI araştırmalarımız; ajanların çevresel belirsizliği minimize etmesini h
 *   **Kuantum Bilişsel Modelleme:** Karar süreçlerinde belirsizlik ve tünelleme davranışlarını açıklayan kuantum durum modelleri (Bloch Küresi projeksiyonları).
 
 ### 📡 2. Arat OMEGA (Bilişsel Elektronik Harp ve Otonom Sistemler)
-AGI araştırmalarımızın sahaya inmiş, taktiksel ve operasyonel uzantısıdır. Elektromanyetik spektrumda otonom egemenlik kurmayı hedefleyen **Bilişsel Elektronik Harp (Cognitive EW)** suite'imiz OMEGA, kapalı çevrim OODA (Observe, Orient, Decide, Actdöngüsüyle çalışır.
+AGI araştırmalarımızın sahaya inmiş, taktiksel ve operasyonel uzantısıdır. Elektromanyetik spektrumda otonom egemenlik kurmayı hedefleyen **Bilişsel Elektronik Harp (Cognitive EW)** suite'imiz OMEGA, kapalı çevrim OODA (Observe, Orient, Decide, Act) döngüsüyle çalışır.
 
 *   **Otonom Spektrum Hakimiyeti:** Wigner-Ville dağılımı ile LPI (Low Probability of Intercept) radar tespiti ve çok modlu yapay zeka (ResNet-1D + DenseNet) ile %98+ doğruluk oranına sahip modülasyon deşifresi.
 *   **Karar ve Aksiyon (ADSS):** Bayesian Karar Destek Sistemleri ile belirsizlik altında en optimal jamming (karıştırma/aldatma) stratejisinin otonom olarak seçilmesi.
-*   **SWaP-C Optimizasyonu (Boyut, Ağırlık, Güç ve Maliyet):** Karbon fiber şasi, aktif Peltier sıvı soğutma ve Jetson Orin Nano / SDR (USRPdonanımları ile fiziksel limitlerin zirvesinde görev kabiliyeti.
+*   **SWaP-C Optimizasyonu (Boyut, Ağırlık, Güç ve Maliyet):** Karbon fiber şasi, aktif Peltier sıvı soğutma ve Jetson Orin Nano / SDR (USRP) donanımları ile fiziksel limitlerin zirvesinde görev kabiliyeti.
 
 ---
 
@@ -53,7 +53,7 @@ AGI araştırmalarımızın sahaya inmiş, taktiksel ve operasyonel uzantısıd�
 Bu depoda, ARAT Labs'in yukarıda özetlenen iki ana laboratuvarını görselleştiren, fütüristik, etkileşimli bir tek sayfalık web uygulaması (**Bilişsel Kontrol Paneli**) yer almaktadır.
 
 ### 🌟 Öne Çıkan Özellikler ve Simülatörler:
-*   **Aktif Çıkarım (Active InferenceSimülatörü:** Ajanın engeller etrafından dolaşarak hedefe ulaşırken Serbest Enerjiyi (\(F\)) minimize etme sürecini görselleştirir. Anlık Varyasyonel Serbest Enerji grafiği çizer.
+*   **Aktif Çıkarım (Active Inference) Simülatörü:** Ajanın engeller etrafından dolaşarak hedefe ulaşırken Serbest Enerjiyi (\(F\)) minimize etme sürecini görselleştirir. Anlık Varyasyonel Serbest Enerji grafiği çizer.
 *   **SDR Spektrum Analizörü:** BPSK, QPSK, FHSS (Frekans Atlamalı) ve LPI radar sinyallerini simüle eden ve bir şelale (spectrogram) grafik akışı sunan RF sinyal analizörü.
 *   **Aktif Karıştırıcı (Jamming Barrage):** Spektruma yüksek güçte parazit basarak düşman radarını körelten DRFM simülasyonu.
 *   **SWaP-C Donanım Telemetrisi:** Jetson Orin Nano CPU yükünü ve GaN güç amplifikatör sıcaklığını izleyen telemetri ekranı. Isı kritik seviyeyi aştığında **Peltier sıvı soğutma fanı** otomatik olarak dönmeye başlar.
@@ -66,11 +66,16 @@ Günlük ekranının altındaki giriş satırına aşağıdaki komutları yazara
 *   `/jam` - OMEGA Elektronik Harp karıştırıcısını açar veya kapatır.
 *   `/stress` - Jetson Orin işlemcisine yapay stres testi yükleyerek Peltier soğutmanın devreye girişini tetikler.
 *   `/status` - Güncel sıcaklık, güç tüketimi ve aktif modları gösteren özet durum raporu yazdırır.
+*   `/theme [matrix|default|fusion|nebula]` - Arayüz rengini ve stil şemasını dinamik olarak değiştirir.
+*   `/audio [on|off]` - SDR demodülatör ses çıkışını kontrol eder.
+*   `/quantum <theta> <phi>` - Durum koordinatlarını el ile set eder.
+*   `/obstacle [clear|random]` - Sandbox engellerini temizler veya rastgele dağıtır.
+*   `/about` - ASCII Art logomuzu ve v2.0 detaylarını konsola yazdırır.
 *   `/reset` - Active Inference ajanını başlangıç konumuna döndürür.
 *   `/clear` - Terminal günlük geçmişini temizler.
 
 ### 🕹️ Gizli Mod (Cyber Overdrive Mode Easter Egg):
-Manifesto sayfasındaki büyük **ARAT logolu kalkan görseline** tıkladığınızda arayüz **Cyber Overdrive** moduna geçer. Ekrandaki tüm renkler yeşil matris düzenine dönüşür ve tarama çizgileri (scanlinesaktif hale gelir. Tekrar tıklanarak normal moda dönülebilir.
+Manifesto sayfasındaki büyük **ARAT logolu kalkan görseline** tıkladığınızda arayüz **Cyber Overdrive** moduna geçer. Ekrandaki tüm renkler yeşil matris düzenine dönüşür ve tarama çizgileri (scanlines) aktif hale gelir. Tekrar tıklanarak normal moda dönülebilir.
 
 ---
 
@@ -83,9 +88,33 @@ Portalda 3 adet önceden programlanmış taktik senaryo simülasyonu bulunmaktad
 
 ---
 
+## 🚀 v2.0 Kapsamlı Güncelleme Özellikleri (Interactive Sandbox & Audio)
+
+Portal v2.0 sürümü ile birlikte sisteme tam etkileşimli özellikler ve gerçek zamanlı işitsel geri bildirimler entegre edilmiştir:
+
+1. **Etkileşimli Bloch Küresi (Quantum Drag & State Control):**
+   - Küre canvası fare ile sürüklenebilir hale getirilmiştir. Kullanıcı sürükledikçe $\theta$ ve $\phi$ durum açıları gerçek zamanlı güncellenir.
+   - Durum genlik katsayıları ($\alpha$ ve $\beta$) kompleks sayı aritmetiği kullanılarak hesaplanır ve $|\psi\rangle$ durum vektörü formülüyle dinamik olarak ekranda gösterilir.
+2. **Active Inference Sandbox (Engel Boyama ve Konumlandırma):**
+   - Grid üzerine tıklanarak anlık olarak engel (obstacle) yerleştirilebilir veya kaldırılabilir.
+   - `Shift + Tıklama` ile Hedef (Target), `Ctrl + Tıklama` ile Ajan (Agent) koordinatları el ile taşınabilir.
+3. **SDR Demodülatör Ses Sentezleyicisi (Web Audio API):**
+   - Tespit edilen sinyaller için aslına uygun ses sentezi (FHSS bip sesleri, BPSK carrier tonu, QPSK faz kayma cızırtısı, LPI sweep uğultusu, Jamming beyaz gürültüsü) eklenmiştir.
+   - Arayüze "Sesi Aç" kontrol butonu ve neon ses dalga visualizer animasyonu entegre edilmiştir.
+4. **Yeni CLI Terminal Komutları:**
+   - `/theme [matrix|default|fusion|nebula]` - Arayüz rengini ve stil şemasını dinamik olarak değiştirir.
+   - `/audio [on|off]` - SDR demodülatör ses çıkışını kontrol eder.
+   - `/quantum <theta> <phi>` - Durum koordinatlarını el ile set eder.
+   - `/obstacle [clear|random]` - Sandbox engellerini temizler veya rastgele dağıtır.
+   - `/about` - ASCII Art logomuzu ve v2.0 detaylarını konsola yazdırır.
+5. **4. Taktik Senaryo:**
+   - *"Bilişsel Spektrum Tünelleme ve Elektronik Taarruz"* senaryosu ile kuantum tünelleme filtresi, active inference rota atlatması ve overdrive karıştırma yayını (+48 dBm) asenkron storyboard akışı ile simüle edilir.
+
+---
+
 ## 🚀 Kurulum ve Çalıştırma
 
-Arayüz tamamen tarayıcı tabanlı (HTML5/CSS3/Vanilla JSkodlanmıştır ve herhangi bir kütüphane bağımlılığı gerektirmez.
+Arayüz tamamen tarayıcı tabanlı (HTML5/CSS3/Vanilla JS) kodlanmıştır ve herhangi bir kütüphane bağımlılığı gerektirmez.
 
 1. Depoyu klonlayın:
    ```bash
