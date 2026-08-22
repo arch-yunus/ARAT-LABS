@@ -35,6 +35,10 @@ Arat Labs çatısı altında teknoloji felsefesi ile sistem mimarisini birleşti
 Şirketimizin AR-GE ekosistemi, donanım ve yazılım bütünlüğünü sağlamak üzere tasarlanmış, birbirini besleyen üç ana koldan oluşur:
 
 ### 🧠 1. Arat AGI Research (Yapay Genel Zeka Araştırmaları)
+<div align="center">
+  <img src="assets/banner_agi.jpg" alt="ARAT AGI Research Banner" width="600" style="border-radius: 6px; margin-bottom: 10px;" />
+</div>
+
 AGI araştırmalarımız; ajanların çevresel belirsizliği minimize etmesini hedefleyen **Serbest Enerji Prensibi (Free Energy Principle)**, Hiyerarşik Aktif Çıkarım (Active Inference) ve Kuantum Biliş (Quantum Cognition) teorilerine dayanır. Zekanın donanım sınırlarına hapsolmadan otonom olarak var olabilmesi için kavramsal ve matematiksel temelleri burada kodluyoruz.
 
 *   **Bilişsel Orkestrasyon:** Belirli görevlerde uzmanlaşmış alt ajanların asenkron mikroservislerle iletişim kurduğu, vektörel hafıza yönetimi yapabilen "zihin ağları".
@@ -43,6 +47,10 @@ AGI araştırmalarımız; ajanların çevresel belirsizliği minimize etmesini h
 *   **Kuantum Bilişsel Modelleme:** Karar süreçlerinde belirsizlik ve tünelleme davranışlarını açıklayan kuantum durum modelleri (Bloch Küresi projeksiyonları).
 
 ### 📡 2. Arat OMEGA (Bilişsel Elektronik Harp ve Savunma Sistemleri)
+<div align="center">
+  <img src="assets/banner_omega.jpg" alt="ARAT OMEGA EW Banner" width="600" style="border-radius: 6px; margin-bottom: 10px;" />
+</div>
+
 AGI araştırmalarımızın sahaya inmiş, taktiksel ve operasyonel uzantısıdır. Elektromanyetik spektrumda otonom egemenlik kurmayı hedefleyen **Bilişsel Elektronik Harp (Cognitive EW)** suite'imiz OMEGA, kapalı çevrim OODA (Observe, Orient, Decide, Act) döngüsüyle çalışır.
 
 *   **Otonom Spektrum Hakimiyeti:** Wigner-Ville dağılımı ile LPI (Low Probability of Intercept) radar tespiti ve çok modlu yapay zeka (ResNet-1D + DenseNet) ile %98+ doğruluk oranına sahip modülasyon deşifresi.
@@ -50,6 +58,10 @@ AGI araştırmalarımızın sahaya inmiş, taktiksel ve operasyonel uzantısıd�
 *   **SWaP-C Optimizasyonu (Boyut, Ağırlık, Güç ve Maliyet):** Karbon fiber şasi, aktif Peltier sıvı soğutma ve Jetson Orin Nano / SDR (USRP) donanımları ile fiziksel limitlerin zirvesinde görev kabiliyeti.
 
 ### ⚡ 3. Arat VOLT (Kuantum & Termodinamik İleri Enerji Sistemleri)
+<div align="center">
+  <img src="assets/banner_energy.jpg" alt="ARAT VOLT Energy Banner" width="600" style="border-radius: 6px; margin-bottom: 10px;" />
+</div>
+
 Zekanın ve elektronik harp sistemlerinin sürdürülebilirliği için enerji üretimini, dağıtımını ve serbest enerji hasadını otonomlaştıran enerji kolumuzdur.
 
 *   **Manyetik Tokamak Plazma Tutulumu:** D-T füzyon plazmasının kararlılığını mikrosaniye hassasiyetli AI geri besleme döngüleri ve süperiletken manyetik bobinlerle kontrol eden termonükleer optimizasyon.

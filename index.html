@@ -91,14 +91,22 @@
           
           <div class="manifesto-hero">
             <div class="logo-card" id="banner-click-trigger" title="Cyber Overdrive Modunu Tetiklemek için Tıklayın!">
-              <img src="assets/banner.jpg" alt="ARAT Labs Banner" class="large-logo" id="banner-logo-img">
-              <div class="logo-overlay-text">ARAT TECHNOLOGY &amp; SYSTEMS</div>
+              <img src="assets/banner_main.jpg" alt="ARAT Labs Banner" class="large-logo" id="banner-logo-img">
+              <div class="logo-overlay-text">ARAT COGNITIVE, DEFENSE &amp; ENERGY SYSTEMS</div>
+              
+              <!-- Banner Thumbnail Selector Strip -->
+              <div class="banner-switcher-strip" onclick="event.stopPropagation()">
+                <img src="assets/banner_main.jpg" class="banner-thumb active" onclick="setHeroBanner('assets/banner_main.jpg', this)" title="Ana Sistem Banner">
+                <img src="assets/banner_agi.jpg" class="banner-thumb" onclick="setHeroBanner('assets/banner_agi.jpg', this)" title="AGI Research Banner">
+                <img src="assets/banner_omega.jpg" class="banner-thumb" onclick="setHeroBanner('assets/banner_omega.jpg', this)" title="OMEGA EW Banner">
+                <img src="assets/banner_energy.jpg" class="banner-thumb" onclick="setHeroBanner('assets/banner_energy.jpg', this)" title="VOLT Energy Banner">
+              </div>
             </div>
             <div class="manifesto-intro">
               <div class="cyber-badge">ARAT LABS ENTERPRISE © 2026</div>
               <h2>Teknolojide Devrimi Hedefleyen Bağımsız Araştırma ve Üretim Şirketi</h2>
               <p class="manifesto-text">
-                Bizim inancımıza göre zeka; devasa veri merkezlerinde hapsolmuş, yalnızca istatistiksel olasılık dağılımları üreten monolitik bir yapı olamaz. Gerçek zeka; çevresiyle etkileşime giren, belirsizlik (sürpriz) anında hayatta kalabilen ve kısıtlı donanım kaynaklarıyla dahi otonom kararlar alabilen <strong>"bedenlenmiş" (embodied)</strong> bir sistem olmalıdır.
+                Bizim inancımıza göre zeka; devasa veri merkezlerinde hapsolmuş, yalnızca istatistiksel olasılık dağılımları üreten monolitik bir yapı olamaz. Gerçek zeka; çevresiyle etkileşime giren, belirsizlik (sürpriz) anında hayatta kalabilen, kendi enerjisini yönetebilen ve kısıtlı donanım kaynaklarıyla dahi otonom kararlar alabilen <strong>"bedenlenmiş" (embodied)</strong> bir sistem olmalıdır.
               </p>
               <div class="manifesto-actions">
                 <button class="btn btn-primary" onclick="switchTab('agi')">AGI Araştırma Laboratuvarı</button>
@@ -129,6 +137,9 @@
 
           <div class="labs-overview-row">
             <div class="lab-card card-agi" onclick="switchTab('agi')">
+              <div class="lab-card-banner">
+                <img src="assets/banner_agi.jpg" alt="ARAT AGI Banner">
+              </div>
               <div class="card-header">
                 <h3>ARAT AGI RESEARCH</h3>
                 <span class="card-tag tag-blue">LAB-01</span>
@@ -143,6 +154,9 @@
             </div>
 
             <div class="lab-card card-omega" onclick="switchTab('omega')">
+              <div class="lab-card-banner">
+                <img src="assets/banner_omega.jpg" alt="ARAT OMEGA Banner">
+              </div>
               <div class="card-header">
                 <h3>ARAT OMEGA EW</h3>
                 <span class="card-tag tag-red">LAB-02</span>
@@ -158,6 +172,9 @@
             </div>
 
             <div class="lab-card card-energy" onclick="switchTab('energy')">
+              <div class="lab-card-banner">
+                <img src="assets/banner_energy.jpg" alt="ARAT VOLT Energy Banner">
+              </div>
               <div class="card-header">
                 <h3>ARAT ENERGY (VOLT)</h3>
                 <span class="card-tag tag-gold">LAB-03</span>

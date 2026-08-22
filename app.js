@@ -46,6 +46,21 @@ function initTabs() {
     });
   });
 
+  window.setHeroBanner = function(imgSrc, thumbEl) {
+    const mainImg = document.getElementById('banner-logo-img');
+    if (mainImg) {
+      mainImg.style.opacity = '0.3';
+      setTimeout(() => {
+        mainImg.src = imgSrc;
+        mainImg.style.opacity = '1';
+      }, 150);
+    }
+    const thumbs = document.querySelectorAll('.banner-thumb');
+    thumbs.forEach(t => t.classList.remove('active'));
+    if (thumbEl) thumbEl.classList.add('active');
+    addLog('SYSTEM', `Ana hero banner görseli güncellendi: [${imgSrc.split('/').pop()}]`);
+  };
+
   window.switchTab = function(tabName) {
     // Update tabs
     tabs.forEach(t => {
