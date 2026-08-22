@@ -87,6 +87,16 @@ body {
   right: -10%;
 }
 
+#orb-energy {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, var(--color-gold) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.05;
+}
+
 /* Main Container Layout */
 .app-container {
   display: flex;
@@ -119,34 +129,33 @@ body {
 }
 
 .header-logo {
-  height: 48px;
-  width: auto;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
   transition: transform 0.3s ease;
 }
 
-.logo-area:hover .header-logo {
-  transform: scale(1.05);
-  border-color: var(--color-agi);
-  box-shadow: 0 0 10px var(--color-agi-glow);
+.header-logo:hover {
+  transform: rotate(5deg) scale(1.05);
 }
 
 .title-text h1 {
   font-family: var(--font-title);
-  font-size: 1.3rem;
+  font-size: 1.1rem;
+  font-weight: 900;
   letter-spacing: 2px;
-  background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+  background: linear-gradient(90deg, #fff, var(--color-agi));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-weight: 900;
 }
 
-.title-text .sub-title {
-  font-family: var(--font-title);
-  font-size: 0.65rem;
+.sub-title {
+  font-size: 0.6rem;
   color: var(--text-muted);
-  letter-spacing: 3px;
+  letter-spacing: 1.5px;
+  font-weight: 500;
   display: block;
 }
 
@@ -199,10 +208,17 @@ body {
   box-shadow: 0 0 12px rgba(255, 51, 102, 0.2);
 }
 
-.nav-tab[data-tab="mission"].active {
-  background: rgba(245, 175, 25, 0.1);
+.nav-tab[data-tab="energy"].active {
+  background: rgba(245, 175, 25, 0.12);
   border-color: var(--color-gold);
-  box-shadow: 0 0 12px rgba(245, 175, 25, 0.2);
+  box-shadow: 0 0 12px rgba(245, 175, 25, 0.25);
+  color: var(--color-gold);
+}
+
+.nav-tab[data-tab="mission"].active {
+  background: rgba(0, 255, 102, 0.1);
+  border-color: var(--color-green);
+  box-shadow: 0 0 12px rgba(0, 255, 102, 0.2);
 }
 
 /* Top System Status Monitor */
@@ -599,7 +615,7 @@ canvas {
 .labs-overview-row {
   grid-column: 1 / 3;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 15px;
 }
 
@@ -638,6 +654,7 @@ canvas {
 
 .tag-blue { background: rgba(0, 242, 254, 0.15); border: 1px solid var(--color-agi); color: var(--color-agi); }
 .tag-red { background: rgba(255, 51, 102, 0.15); border: 1px solid var(--color-omega); color: var(--color-omega); }
+.tag-gold { background: rgba(245, 175, 25, 0.15); border: 1px solid var(--color-gold); color: var(--color-gold); }
 
 .lab-card p {
   font-size: 0.8rem;
@@ -691,6 +708,102 @@ canvas {
 .card-omega:hover .card-footer-link {
   color: var(--color-omega);
   transform: translateX(4px);
+}
+
+.card-energy:hover {
+  border-color: var(--color-gold);
+  box-shadow: 0 8px 25px rgba(245, 175, 25, 0.15);
+  transform: translateY(-2px);
+}
+
+.card-energy:hover .card-footer-link {
+  color: var(--color-gold);
+  transform: translateX(4px);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(245, 175, 25, 0.3);
+}
+
+.btn-warning:hover {
+  box-shadow: 0 0 15px rgba(245, 175, 25, 0.5);
+  transform: translateY(-1px);
+}
+
+.text-amber {
+  color: var(--color-gold) !important;
+}
+
+/* ==========================================
+   PANEL 4: ARAT ENERGY (VOLT) SPECIFIC STYLES
+   ========================================== */
+.energy-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 0.9fr;
+  gap: 15px;
+  height: 100%;
+}
+
+.box-smartgrid {
+  grid-column: 1 / 2;
+}
+
+.box-fusion {
+  grid-column: 2 / 3;
+}
+
+.box-spec-energy {
+  grid-column: 3 / 4;
+}
+
+.grid-controls-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.fusion-stats-row {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.stat-pill {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pill-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-family: var(--font-title);
+}
+
+.pill-val {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.fusion-actions {
+  display: flex;
+  gap: 10px;
 }
 
 

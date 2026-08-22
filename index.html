@@ -7,6 +7,9 @@
   <!-- SEO Meta Tags -->
   <meta name="description" content="Arat Labs, Yapay Genel Zeka (AGI), Serbest Enerji Prensibi, Bilişsel Elektronik Harp (OMEGA) ve uç yapay zeka (Edge AI) teknolojilerinde uzmanlaşmış bağımsız bir araştırma ve üretim merkezidir.">
   <meta name="keywords" content="Arat Labs, AGI, Yapay Genel Zeka, Elektronik Harp, OMEGA, Active Inference, Serbest Enerji Prensibi, SWaP-C, Jetson Orin Nano, Wigner-Ville">
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00f2fe">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +24,7 @@
   <div class="tech-grid"></div>
   <div class="glow-orb" id="orb-agi"></div>
   <div class="glow-orb" id="orb-omega"></div>
+  <div class="glow-orb" id="orb-energy"></div>
 
   <!-- Main Container -->
   <div class="app-container">
@@ -31,7 +35,7 @@
         <img src="assets/banner.jpg" alt="ARAT Labs Logo" class="header-logo" id="logo-trigger">
         <div class="title-text">
           <h1>ARAT LABS</h1>
-          <span class="sub-title">COGNITIVE SYSTEMS &amp; DEFENSE</span>
+          <span class="sub-title">COGNITIVE SYSTEMS, DEFENSE &amp; ADVANCED ENERGY</span>
         </div>
       </div>
       
@@ -48,6 +52,10 @@
           <svg class="tab-icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 18c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
           ARAT OMEGA EW
         </button>
+        <button class="nav-tab" data-tab="energy">
+          <svg class="tab-icon" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+          ARAT ENERGY (VOLT)
+        </button>
         <button class="nav-tab" data-tab="mission">
           <svg class="tab-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-5h2v5zm0-7h-2V7h2v2z"/></svg>
           GÖREV KONTROL
@@ -62,6 +70,10 @@
         <div class="status-item">
           <span class="status-label">AGI MODEL</span>
           <span class="status-value text-blue" id="agi-indicator">OPTIMAL</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">ŞEBEKE / VOLT</span>
+          <span class="status-value text-amber" id="energy-indicator">99.8% SYNC</span>
         </div>
         <div class="status-item">
           <span class="status-label">SİSTEM SAATİ</span>
@@ -91,6 +103,7 @@
               <div class="manifesto-actions">
                 <button class="btn btn-primary" onclick="switchTab('agi')">AGI Araştırma Laboratuvarı</button>
                 <button class="btn btn-secondary" onclick="switchTab('omega')">OMEGA Savunma Sistemleri</button>
+                <button class="btn btn-warning" onclick="switchTab('energy')">VOLT Enerji Sistemleri</button>
               </div>
             </div>
           </div>
@@ -99,6 +112,10 @@
             <div class="quote-card">
               <p>"Yaratamadığım şeyi anlayamam."</p>
               <cite>— Richard Feynman</cite>
+            </div>
+            <div class="quote-card">
+              <p>"Evrenin sırlarını bulmak istiyorsanız; enerji, frekans ve titreşim cinsinden düşünün."</p>
+              <cite>— Nikola Tesla</cite>
             </div>
             <div class="quote-card">
               <p>"Zeka, evrenin kendisini anlamlandırma biçimidir. Bizim görevimiz bu süreci hızlandırmaktır."</p>
@@ -136,6 +153,21 @@
                 <span>Deep Modulation Recognition</span>
                 <span>Bayesian Decision Matrix</span>
                 <span>SWaP-C Peltier Cooling</span>
+              </div>
+              <div class="card-footer-link">Laboratuvarı İncele &rarr;</div>
+            </div>
+
+            <div class="lab-card card-energy" onclick="switchTab('energy')">
+              <div class="card-header">
+                <h3>ARAT ENERGY (VOLT)</h3>
+                <span class="card-tag tag-gold">LAB-03</span>
+              </div>
+              <p>Kuantum Termodinamiği, Füzyon Plazma Kararlılığı, Katı Hal Güç Dağıtımı ve Termodinamik Serbest Enerji Hasadı araştırmaları.</p>
+              <div class="card-features">
+                <span>Bilişsel Akıllı Şebeke</span>
+                <span>Tokamak Plazma Tutulumu</span>
+                <span>Onsager Termodinamik</span>
+                <span>GaN &amp; Katı Hal PDU</span>
               </div>
               <div class="card-footer-link">Laboratuvarı İncele &rarr;</div>
             </div>
@@ -459,7 +491,120 @@
         </div>
       </section>
 
-      <!-- PANEL 4: MISSION CONTROL -->
+      <!-- PANEL 4: ARAT ENERGY (VOLT) -->
+      <section class="content-panel" id="panel-energy">
+        <div class="energy-grid">
+          
+          <!-- Column 1: Smart Grid Simulator -->
+          <div class="panel-box box-smartgrid">
+            <div class="box-header">
+              <div class="box-title">
+                <span class="status-dot dot-amber blinking"></span>
+                <h3>BİLİŞSEL AKILLI ŞEBEKE (SMART MICROGRID FLOW)</h3>
+              </div>
+              <div class="box-actions">
+                <button class="btn btn-sm btn-warning" id="btn-grid-balance">OTONOM YÜK DENGELE</button>
+              </div>
+            </div>
+            <div class="canvas-container">
+              <canvas id="grid-canvas"></canvas>
+              <div class="overlay-telemetry" id="grid-telemetry-text">
+                <div>ŞEBEKE FREKANSI: 50.02 Hz</div>
+                <div>REAKTİF GÜÇ DENGESİ: %99.8 Optimal</div>
+                <div>KAYIP/KAÇAK: %0.12 (Süperiletken Hatlar)</div>
+                <div>FÜZYON KATKISI: 4.85 MW (Net Pozitif)</div>
+              </div>
+            </div>
+            <div class="grid-controls-row">
+              <div class="control-col">
+                <label for="range-grid-demand">Şebeke Talep Yükü (MW)</label>
+                <input type="range" id="range-grid-demand" min="10" max="100" value="45">
+              </div>
+              <div class="control-col">
+                <label for="select-grid-mode">Şebeke Modu</label>
+                <select id="select-grid-mode">
+                  <option value="autonomous">Bilişsel Otonom Dengeleme</option>
+                  <option value="island">Ada Modu (İzole Güvenlik)</option>
+                  <option value="surge">Aşırı Güç Yükleme (Overdrive)</option>
+                  <option value="quantum">Kuantum Termodinamik Hasat</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Fusion Plasma Confinement & Stability -->
+          <div class="panel-box box-fusion">
+            <div class="box-header">
+              <div class="box-title">
+                <span class="status-dot dot-amber"></span>
+                <h3>FÜZYON MANYETİK TUTULUM (TOKAMAK PLASMA)</h3>
+              </div>
+              <div class="box-actions">
+                <span class="badge badge-warning" id="fusion-q-badge">Q-FAKTÖRÜ: 3.42</span>
+              </div>
+            </div>
+            <div class="canvas-container">
+              <canvas id="fusion-canvas"></canvas>
+            </div>
+            <div class="fusion-stats-row">
+              <div class="stat-pill">
+                <span class="pill-label">Manyetik Alan</span>
+                <span class="pill-val" id="txt-mag-field">13.8 Tesla</span>
+              </div>
+              <div class="stat-pill">
+                <span class="pill-label">Plazma Sıcaklığı</span>
+                <span class="pill-val" id="txt-plasma-temp">124.5 M °C</span>
+              </div>
+              <div class="stat-pill">
+                <span class="pill-label">Termal Verim</span>
+                <span class="pill-val text-green" id="txt-thermal-eff">%94.6</span>
+              </div>
+            </div>
+            <div class="fusion-actions">
+              <button class="btn btn-sm btn-primary" id="btn-plasma-pulse">Manyetik Darbe Tetikle</button>
+              <button class="btn btn-sm btn-danger" id="btn-plasma-stabilize">Plazma Kilitlenmesi</button>
+            </div>
+          </div>
+
+          <!-- Column 3: Thermodynamics & Energy Math -->
+          <div class="panel-box box-spec-energy">
+            <div class="box-header">
+              <div class="box-title">
+                <h3>TERMODİNAMİK &amp; ENERJİ MATEMATİĞİ</h3>
+              </div>
+            </div>
+            <div class="spec-content">
+              <div class="math-block">
+                <h4>Helmholtz Serbest Enerji &amp; İş Dönüşümü:</h4>
+                <div class="equation">
+                  \(dF = dU - T dS - S dT\)
+                </div>
+                <p>Bilişsel sistemlerimiz açık termodinamik dengesizlik koşullarında minimum entropi üretimiyle maksimum ekserji elde etmeyi hedefler.</p>
+              </div>
+
+              <div class="math-block">
+                <h4>Onsager Karşılıklılık Bağıntıları:</h4>
+                <div class="equation">
+                  \(J_i = \sum_{j} L_{ij} X_j \quad \text{ve} \quad L_{ij} = L_{ji}\)
+                </div>
+                <p>Termoelektrik ve elektromanyetik akıların kuantum ölçeğinde çapraz eşleşmesini modelleyerek sıfır kayıplı mikro enerji hasatlama altyapısı sağlar.</p>
+              </div>
+
+              <div class="spec-list">
+                <h4>Katı Hal Güç &amp; Depolama Altyapısı:</h4>
+                <ul>
+                  <li><strong>GaN Güç Dönüştürücüleri:</strong> 100 kHz - 1 MHz yüksek frekanslı anahtarlama ve %99.4 güç verimliliği.</li>
+                  <li><strong>Lityum-Seramik Katı Hal Bataryalar:</strong> 650 Wh/kg spesifik enerji yoğunluğu ve sıfır termal kaçak riski.</li>
+                  <li><strong>Süperiletken Manyetik Enerji Depolama (SMES):</strong> Milisaniye altı tepki süresiyle kesintisiz taktik güç beslemesi.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PANEL 5: MISSION CONTROL -->
       <section class="content-panel" id="panel-mission">
         <div class="mission-grid-layout">
           
@@ -479,6 +624,9 @@
                 <option value="swarm-avoid">AGI Otonom Sürü İHA Koordinasyon Görevi</option>
                 <option value="quantum-decide">Kuantum Bilişsel Durum ve Karar Destek Simülasyonu</option>
                 <option value="quantum-tunnel-jam">Bilişsel Spektrum Tünelleme ve Elektronik Taarruz</option>
+                <option value="energy-grid-defense">Akıllı Şebeke Siber-Fiziksel Savunma &amp; Aşırı Yük İzolasyonu (VOLT)</option>
+                <option value="fusion-plasma-confinement">Manyetik Tokamak Plazma Kırılma Önleme ve Manyetik Kilitleme</option>
+                <option value="deep-space-energy-harvest">Derin Uzay / Uç Platform Termodinamik Enerji Hasatlama</option>
               </select>
 
               <div class="mission-details-card" id="mission-info-display">

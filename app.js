@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initOodaEngine();
   initTelemetry();
   initBlochSphere();
+  initEnergySimulator();
   initCliConsole();
   initMissionControl();
   initEasterEgg();
@@ -20,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial logs
   addLog('SYSTEM', 'Tüm bilişsel modüller başarıyla başlatıldı. Portal çevrim içi.');
   addLog('SYSTEM', 'CLI terminali aktif. Komutları denemek için /help yazabilirsiniz.');
+  
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.error('Service Worker registration failed', err));
+  }
 });
 
 /* ==========================================
@@ -30,6 +37,7 @@ function initTabs() {
   const panels = document.querySelectorAll('.content-panel');
   const orbAgi = document.getElementById('orb-agi');
   const orbOmega = document.getElementById('orb-omega');
+  const orbEnergy = document.getElementById('orb-energy');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -62,23 +70,35 @@ function initTabs() {
       orbAgi.style.transform = 'scale(1.4) translate(10%, 10%)';
       orbAgi.style.opacity = '0.3';
       orbOmega.style.opacity = '0.05';
+      if (orbEnergy) orbEnergy.style.opacity = '0.05';
       addLog('SYSTEM', 'ARAT AGI RESEARCH laboratuvar ortamı görüntülendi.');
     } else if (tabName === 'omega') {
       orbOmega.style.transform = 'scale(1.4) translate(-10%, -10%)';
       orbOmega.style.opacity = '0.3';
       orbAgi.style.opacity = '0.05';
+      if (orbEnergy) orbEnergy.style.opacity = '0.05';
       addLog('SYSTEM', 'ARAT OMEGA EW bilişsel elektronik harp kontrol paneli görüntülendi.');
+    } else if (tabName === 'energy') {
+      if (orbEnergy) {
+        orbEnergy.style.transform = 'translate(-50%, -50%) scale(1.3)';
+        orbEnergy.style.opacity = '0.25';
+      }
+      orbAgi.style.opacity = '0.05';
+      orbOmega.style.opacity = '0.05';
+      addLog('SYSTEM', 'ARAT ENERGY (VOLT) Kuantum Termodinamik ve Akıllı Şebeke laboratuvarı görüntülendi.');
     } else if (tabName === 'mission') {
       orbOmega.style.transform = 'none';
       orbAgi.style.transform = 'none';
-      orbOmega.style.opacity = '0.2';
-      orbAgi.style.opacity = '0.2';
+      orbOmega.style.opacity = '0.15';
+      orbAgi.style.opacity = '0.15';
+      if (orbEnergy) orbEnergy.style.opacity = '0.15';
       addLog('SYSTEM', 'Taktiksel Görev Kontrol paneli görüntülendi.');
     } else {
       orbAgi.style.transform = 'none';
       orbOmega.style.transform = 'none';
       orbAgi.style.opacity = '0.15';
       orbOmega.style.opacity = '0.15';
+      if (orbEnergy) orbEnergy.style.opacity = '0.05';
       addLog('SYSTEM', 'Ana Manifesto portalı görüntülendi.');
     }
   };
@@ -1449,6 +1469,365 @@ function initBlochSphere() {
 }
 
 /* ==========================================
+   ARAT ENERGY: SMART GRID & TOKAMAK FUSION SIMULATOR
+   ========================================== */
+function initEnergySimulator() {
+  const gridCanvas = document.getElementById('grid-canvas');
+  const fusionCanvas = document.getElementById('fusion-canvas');
+  if (!gridCanvas || !fusionCanvas) return;
+
+  const gCtx = gridCanvas.getContext('2d');
+  const fCtx = fusionCanvas.getContext('2d');
+
+  let gWidth, gHeight, fWidth, fHeight;
+  let animTime = 0;
+
+  // Grid Simulation State
+  let gridDemand = 45; // MW
+  let gridMode = 'autonomous';
+  let gridFrequency = 50.00;
+  let fusionGen = 48.5; // MW
+  let solarGen = 18.2; // MW
+  let batteryStorage = 88.4; // % SoC
+  let isBalancing = false;
+
+  // Tokamak Fusion State
+  let magneticField = 13.8; // Tesla
+  let plasmaTemp = 124.5; // Million °C
+  let thermalEff = 94.6; // %
+  let qFactor = 3.42;
+  let plasmaTurbulence = 1.0;
+  let pulseEffect = 0;
+
+  // Grid Nodes
+  const gridNodes = [
+    { id: 'fusion', name: 'Tokamak Reaktörü', type: 'gen', x: 0.2, y: 0.3, power: 48.5, color: '#f5af19' },
+    { id: 'solar', name: 'Kuantum Hasadı', type: 'gen', x: 0.2, y: 0.75, power: 18.2, color: '#00ff66' },
+    { id: 'battery', name: 'Katı Hal SMES', type: 'storage', x: 0.5, y: 0.5, power: 25.0, color: '#00f2fe' },
+    { id: 'ai', name: 'Edge AI Merkezi', type: 'load', x: 0.8, y: 0.25, power: -22.0, color: '#00f2fe' },
+    { id: 'defense', name: 'OMEGA Savunma', type: 'load', x: 0.8, y: 0.55, power: -18.5, color: '#ff3366' },
+    { id: 'substation', name: 'Şehir Dağıtımı', type: 'load', x: 0.8, y: 0.85, power: -30.0, color: '#f5af19' }
+  ];
+
+  const gridLinks = [
+    { from: 0, to: 2 },
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 2, to: 4 },
+    { from: 2, to: 5 },
+    { from: 0, to: 3 }
+  ];
+
+  // Plasma Particles
+  const plasmaParticles = [];
+  const particleCount = 70;
+  for (let i = 0; i < particleCount; i++) {
+    plasmaParticles.push({
+      angle: Math.random() * Math.PI * 2,
+      radiusRatio: 0.3 + Math.random() * 0.45,
+      speed: 0.02 + Math.random() * 0.04,
+      size: 1.5 + Math.random() * 2.5,
+      colorHue: Math.random() > 0.4 ? 40 : 180 + Math.random() * 40
+    });
+  }
+
+  function resize() {
+    if (gridCanvas.parentElement) {
+      const gRect = gridCanvas.parentElement.getBoundingClientRect();
+      gridCanvas.width = gWidth = gRect.width;
+      gridCanvas.height = gHeight = gRect.height;
+    }
+    if (fusionCanvas.parentElement) {
+      const fRect = fusionCanvas.parentElement.getBoundingClientRect();
+      fusionCanvas.width = fWidth = fRect.width;
+      fusionCanvas.height = fHeight = fRect.height;
+    }
+  }
+
+  window.addEventListener('resize', resize);
+
+  // Controls Event Listeners
+  const demandRange = document.getElementById('range-grid-demand');
+  if (demandRange) {
+    demandRange.addEventListener('input', (e) => {
+      gridDemand = parseFloat(e.target.value);
+      updateGridTelemetry();
+    });
+  }
+
+  const modeSelect = document.getElementById('select-grid-mode');
+  if (modeSelect) {
+    modeSelect.addEventListener('change', (e) => {
+      gridMode = e.target.value;
+      addLog('VOLT ENERJİ', `Şebeke çalışma modu güncellendi: [${gridMode.toUpperCase()}]`);
+      if (gridMode === 'surge') {
+        gridFrequency = 50.18;
+      } else if (gridMode === 'island') {
+        gridFrequency = 49.95;
+      } else {
+        gridFrequency = 50.00;
+      }
+      updateGridTelemetry();
+    });
+  }
+
+  const balanceBtn = document.getElementById('btn-grid-balance');
+  if (balanceBtn) {
+    balanceBtn.addEventListener('click', () => {
+      window.balanceGrid();
+    });
+  }
+
+  const pulseBtn = document.getElementById('btn-plasma-pulse');
+  if (pulseBtn) {
+    pulseBtn.addEventListener('click', () => {
+      window.pulsePlasma();
+    });
+  }
+
+  const stabilizeBtn = document.getElementById('btn-plasma-stabilize');
+  if (stabilizeBtn) {
+    stabilizeBtn.addEventListener('click', () => {
+      window.stabilizePlasma();
+    });
+  }
+
+  window.balanceGrid = function() {
+    isBalancing = true;
+    addLog('VOLT ENERJİ', 'Bilişsel Yük Dengeleme devrede. Onsager entropi akış matrisleri optimize ediliyor...');
+    setTimeout(() => {
+      gridFrequency = 50.00;
+      const energyInd = document.getElementById('energy-indicator');
+      if (energyInd) {
+        energyInd.textContent = '100% SYNC';
+        energyInd.className = 'status-value text-green';
+      }
+      addLog('VOLT ENERJİ', 'Şebeke frekansı 50.00 Hz değerine kilitlendi. Süperiletken SMES stabil.');
+      isBalancing = false;
+      updateGridTelemetry();
+    }, 1200);
+  };
+
+  window.pulsePlasma = function() {
+    pulseEffect = 1.0;
+    qFactor = (3.42 + Math.random() * 0.8).toFixed(2);
+    plasmaTemp = (124.5 + Math.random() * 20).toFixed(1);
+    addLog('VOLT ENERJİ', `Tokamak manyetik darbe gönderildi. Anlık Q-Faktörü: ${qFactor}, Sıcaklık: ${plasmaTemp} M °C`);
+    updateFusionStats();
+  };
+
+  window.stabilizePlasma = function() {
+    plasmaTurbulence = 0.4;
+    magneticField = 14.5;
+    thermalEff = 97.2;
+    addLog('VOLT ENERJİ', 'Kuantum manyetik kilitleme aktif. Plazma kırılma riski %0.01 seviyesine düşürüldü.');
+    updateFusionStats();
+    setTimeout(() => {
+      plasmaTurbulence = 1.0;
+      magneticField = 13.8;
+      thermalEff = 94.6;
+      updateFusionStats();
+    }, 4000);
+  };
+
+  function updateGridTelemetry() {
+    const tele = document.getElementById('grid-telemetry-text');
+    if (tele) {
+      tele.innerHTML = `
+        <div>ŞEBEKE FREKANSI: ${gridFrequency.toFixed(2)} Hz</div>
+        <div>TALEP YÜKÜ: ${gridDemand.toFixed(1)} MW | SMES: %${batteryStorage.toFixed(1)}</div>
+        <div>KAYIP/KAÇAK: %0.08 (Süperiletken Hatlar)</div>
+        <div>FÜZYON KATKISI: ${fusionGen.toFixed(2)} MW (Net Pozitif)</div>
+      `;
+    }
+  }
+
+  function updateFusionStats() {
+    const qBadge = document.getElementById('fusion-q-badge');
+    const txtMag = document.getElementById('txt-mag-field');
+    const txtTemp = document.getElementById('txt-plasma-temp');
+    const txtEff = document.getElementById('txt-thermal-eff');
+
+    if (qBadge) qBadge.textContent = `Q-FAKTÖRÜ: ${qFactor}`;
+    if (txtMag) txtMag.textContent = `${magneticField} Tesla`;
+    if (txtTemp) txtTemp.textContent = `${plasmaTemp} M °C`;
+    if (txtEff) txtEff.textContent = `%${thermalEff}`;
+  }
+
+  // Draw Smart Grid Canvas
+  function drawSmartGrid() {
+    if (!gWidth || !gHeight) return;
+    gCtx.clearRect(0, 0, gWidth, gHeight);
+
+    // Draw grid lines
+    gridLinks.forEach(link => {
+      const fromNode = gridNodes[link.from];
+      const toNode = gridNodes[link.to];
+
+      const x1 = fromNode.x * gWidth;
+      const y1 = fromNode.y * gHeight;
+      const x2 = toNode.x * gWidth;
+      const y2 = toNode.y * gHeight;
+
+      // Base line
+      gCtx.beginPath();
+      gCtx.moveTo(x1, y1);
+      gCtx.lineTo(x2, y2);
+      gCtx.strokeStyle = 'rgba(245, 175, 25, 0.2)';
+      gCtx.lineWidth = 2;
+      gCtx.stroke();
+
+      // Flowing power packet
+      const packetT = ((animTime * 1.5 + (link.from * 0.3)) % 1);
+      const px = x1 + (x2 - x1) * packetT;
+      const py = y1 + (y2 - y1) * packetT;
+
+      gCtx.beginPath();
+      gCtx.arc(px, py, 3.5, 0, Math.PI * 2);
+      gCtx.fillStyle = '#f5af19';
+      gCtx.shadowColor = '#f5af19';
+      gCtx.shadowBlur = 8;
+      gCtx.fill();
+      gCtx.shadowBlur = 0;
+    });
+
+    // Draw grid nodes
+    gridNodes.forEach(node => {
+      const nx = node.x * gWidth;
+      const ny = node.y * gHeight;
+
+      // Glow circle
+      gCtx.beginPath();
+      gCtx.arc(nx, ny, 16, 0, Math.PI * 2);
+      gCtx.fillStyle = 'rgba(13, 17, 34, 0.85)';
+      gCtx.strokeStyle = node.color;
+      gCtx.lineWidth = 2;
+      gCtx.fill();
+      gCtx.stroke();
+
+      // Inner dot
+      gCtx.beginPath();
+      gCtx.arc(nx, ny, 6, 0, Math.PI * 2);
+      gCtx.fillStyle = node.color;
+      gCtx.shadowColor = node.color;
+      gCtx.shadowBlur = 10;
+      gCtx.fill();
+      gCtx.shadowBlur = 0;
+
+      // Label text
+      gCtx.font = '9px Orbitron, sans-serif';
+      gCtx.fillStyle = '#ffffff';
+      gCtx.textAlign = 'center';
+      gCtx.fillText(node.name, nx, ny - 22);
+
+      gCtx.font = '8px Inter, sans-serif';
+      gCtx.fillStyle = node.type === 'load' ? '#ff4b2b' : '#00ff66';
+      gCtx.fillText(`${node.power > 0 ? '+' : ''}${node.power} MW`, nx, ny + 28);
+    });
+  }
+
+  // Draw Tokamak Fusion Plasma Canvas
+  function drawFusionPlasma() {
+    if (!fWidth || !fHeight) return;
+    fCtx.clearRect(0, 0, fWidth, fHeight);
+
+    const cx = fWidth / 2;
+    const cy = fHeight / 2;
+    const maxR = Math.min(fWidth, fHeight) * 0.42;
+
+    // Draw Tokamak outer & inner magnetic containment chambers
+    fCtx.beginPath();
+    fCtx.arc(cx, cy, maxR, 0, Math.PI * 2);
+    fCtx.strokeStyle = 'rgba(245, 175, 25, 0.35)';
+    fCtx.lineWidth = 3;
+    fCtx.stroke();
+
+    fCtx.beginPath();
+    fCtx.arc(cx, cy, maxR * 0.3, 0, Math.PI * 2);
+    fCtx.fillStyle = 'rgba(5, 7, 15, 0.95)';
+    fCtx.strokeStyle = 'rgba(0, 242, 254, 0.5)';
+    fCtx.lineWidth = 2;
+    fCtx.fill();
+    fCtx.stroke();
+
+    // Draw Magnetic Field Lines (Ellipses)
+    for (let i = 0; i < 8; i++) {
+      const angle = (i * Math.PI / 4) + (animTime * 0.2);
+      fCtx.save();
+      fCtx.translate(cx, cy);
+      fCtx.rotate(angle);
+      fCtx.beginPath();
+      fCtx.ellipse(0, 0, maxR * 0.85, maxR * 0.38, 0, 0, Math.PI * 2);
+      fCtx.strokeStyle = `rgba(245, 175, 25, ${0.08 + (pulseEffect * 0.2)})`;
+      fCtx.lineWidth = 1.2;
+      fCtx.stroke();
+      fCtx.restore();
+    }
+
+    // Plasma Core Vortex
+    const gradient = fCtx.createRadialGradient(cx, cy, maxR * 0.25, cx, cy, maxR * 0.8);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+    gradient.addColorStop(0.3, `rgba(245, 175, 25, ${0.6 + pulseEffect * 0.3})`);
+    gradient.addColorStop(0.7, 'rgba(255, 75, 43, 0.4)');
+    gradient.addColorStop(1, 'transparent');
+
+    fCtx.beginPath();
+    fCtx.arc(cx, cy, maxR * 0.8, 0, Math.PI * 2);
+    fCtx.fillStyle = gradient;
+    fCtx.fill();
+
+    // Pulse Shockwave
+    if (pulseEffect > 0.02) {
+      fCtx.beginPath();
+      fCtx.arc(cx, cy, maxR * (1 - pulseEffect * 0.5), 0, Math.PI * 2);
+      fCtx.strokeStyle = `rgba(255, 255, 255, ${pulseEffect})`;
+      fCtx.lineWidth = 4 * pulseEffect;
+      fCtx.stroke();
+      pulseEffect *= 0.95;
+    }
+
+    // Plasma Particles
+    plasmaParticles.forEach(p => {
+      p.angle += p.speed * plasmaTurbulence;
+      const r = maxR * p.radiusRatio;
+      const px = cx + Math.cos(p.angle) * r;
+      const py = cy + Math.sin(p.angle) * r;
+
+      fCtx.beginPath();
+      fCtx.arc(px, py, p.size, 0, Math.PI * 2);
+      fCtx.fillStyle = `hsl(${p.colorHue}, 100%, 70%)`;
+      fCtx.shadowColor = `hsl(${p.colorHue}, 100%, 50%)`;
+      fCtx.shadowBlur = 6;
+      fCtx.fill();
+      fCtx.shadowBlur = 0;
+    });
+
+    // Center Core Label
+    fCtx.font = '10px Orbitron, sans-serif';
+    fCtx.fillStyle = '#f5af19';
+    fCtx.textAlign = 'center';
+    fCtx.fillText('TOKAMAK CORE', cx, cy - 4);
+    fCtx.font = '8px Inter, sans-serif';
+    fCtx.fillStyle = '#00ff66';
+    fCtx.fillText('D-T FUSION', cx, cy + 10);
+  }
+
+  function loop() {
+    animTime += 0.02;
+    const energyPanel = document.getElementById('panel-energy');
+    if (energyPanel && energyPanel.classList.contains('active')) {
+      if (gridCanvas.width === 0 || fusionCanvas.width === 0) resize();
+      drawSmartGrid();
+      drawFusionPlasma();
+    }
+    requestAnimationFrame(loop);
+  }
+
+  resize();
+  loop();
+}
+
+/* ==========================================
    CLI CONSOLE SYSTEM COMMANDS
    ========================================== */
 function initCliConsole() {
@@ -1481,12 +1860,68 @@ function initCliConsole() {
         addLog('SYSTEM', '  <span style="color:#00f2fe">/stress</span> - CPU/GPU yük stres testini tetikler.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/reset</span> - AGI active inference ajanını başlangıç noktasına döndürür.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/status</span> - Sistem telemetrisi ve çalışma istatistikleri raporu verir.');
+        addLog('SYSTEM', '  <span style="color:#f5af19">/energy</span> - Akıllı Şebeke ve Tokamak Füzyon telemetrisini listeler.');
+        addLog('SYSTEM', '  <span style="color:#f5af19">/grid [balance|island|surge|quantum]</span> - Şebeke çalışma modunu değiştirir.');
+        addLog('SYSTEM', '  <span style="color:#f5af19">/fusion [pulse|stabilize]</span> - Füzyon plazmasına manyetik darbe veya kilitleme uygular.');
+        addLog('SYSTEM', '  <span style="color:#f5af19">/power [eco|normal|overdrive]</span> - Güç profilini ayarlar.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/theme [matrix|default|fusion|nebula]</span> - Arayüzün neon rengini/temasını değiştirir.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/audio [on|off]</span> - SDR ses demodülatörünü açar/kapatır.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/quantum &lt;theta&gt; &lt;phi&gt;</span> - Bloch küresi durumunu ayarlar (örnek: /quantum 1.04 0.78).');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/obstacle [clear|random]</span> - Çıkarım engellerini temizler veya karıştırır.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/about</span> - ARAT LABS hakkında detayları gösterir.');
         addLog('SYSTEM', '  <span style="color:#00f2fe">/clear</span> - Tüm terminal satırlarını temizler.');
+        break;
+
+      case '/energy':
+        addLog('VOLT ENERJİ', '<b>[ARAT ENERGY &amp; SMART GRID RAPORU]</b>');
+        addLog('VOLT ENERJİ', '  - Tokamak D-T Plazma Durumu: AKTİF (Q=3.42 Net Pozitif)');
+        addLog('VOLT ENERJİ', '  - Şebeke Frekansı: 50.00 Hz | Senkronizasyon: %100');
+        addLog('VOLT ENERJİ', '  - Süperiletken SMES Rezervi: 48.5 MWs (%88.4 SoC)');
+        addLog('VOLT ENERJİ', '  - Katı Hal PDU Verimi: %99.4 | Termoelektrik Geri Kazanım: 4.2 kW');
+        break;
+
+      case '/grid':
+        const gMode = arg.trim().toLowerCase();
+        const modeElem = document.getElementById('select-grid-mode');
+        if (['balance', 'autonomous', 'island', 'surge', 'quantum'].includes(gMode)) {
+          if (gMode === 'balance') {
+            if (window.balanceGrid) window.balanceGrid();
+          } else {
+            if (modeElem) {
+              modeElem.value = gMode;
+              modeElem.dispatchEvent(new Event('change'));
+            }
+          }
+        } else {
+          addLog('SYSTEM', 'Kullanım: /grid [balance|island|surge|quantum]');
+        }
+        break;
+
+      case '/fusion':
+        const fAction = arg.trim().toLowerCase();
+        if (fAction === 'pulse') {
+          if (window.pulsePlasma) window.pulsePlasma();
+        } else if (fAction === 'stabilize') {
+          if (window.stabilizePlasma) window.stabilizePlasma();
+        } else {
+          addLog('SYSTEM', 'Kullanım: /fusion [pulse|stabilize]');
+        }
+        break;
+
+      case '/power':
+        const pMode = arg.trim().toLowerCase();
+        if (pMode === 'eco') {
+          window.ganPower = 8;
+          addLog('SYSTEM', 'Güç profili [ECO] moduna alındı. GaN çıkış gücü 8W olarak kısıtlandı.');
+        } else if (pMode === 'overdrive') {
+          window.ganPower = 48;
+          addLog('SYSTEM', 'Güç profili [OVERDRIVE] moduna alındı. Maksimum taktik güç devrede (+48 dBm).');
+        } else if (pMode === 'normal') {
+          window.ganPower = 15;
+          addLog('SYSTEM', 'Güç profili [NORMAL] moduna alındı.');
+        } else {
+          addLog('SYSTEM', 'Kullanım: /power [eco|normal|overdrive]');
+        }
         break;
 
       case '/jam':
@@ -1675,6 +2110,38 @@ function initMissionControl() {
         { time: 'T+12.0s', title: 'Peltier Isı Eşleme Modu', desc: 'GaN amplifikatör sıcaklığı 78°C sınırını aştı. Peltier soğutma fanı maksimum hızda döndürülmeye başlandı.' },
         { time: 'T+15.0s', title: 'Harp Alanı Baskılandı', desc: 'Karşı spektrum tamamen köreltildi, engeller aşıldı ve otonom İHA hedefine vardı. Sistem güvenli standby moduna çekildi.' }
       ]
+    },
+    'energy-grid-defense': {
+      title: 'Akıllı Şebeke Siber-Fiziksel Savunma & Aşırı Yük İzolasyonu',
+      text: 'Siber-fiziksel saldırı altında dengesini kaybeden mikro-şebekede, bilişsel yük dengeleyici ve katı hal SMES batarya rezervi otonom devreye girerek ada moduna geçer ve çöküşü engeller.',
+      steps: [
+        { time: 'T+0.0s', title: 'Şebeke Saldırısı Algılandı', desc: 'Frekans dalgalanması 49.60 Hz sınırına indi. Reaktif güç açığı tespit edildi.' },
+        { time: 'T+3.0s', title: 'Otonom Ada Modu Aktivasyonu', desc: 'Şebeke izole ada moduna geçirildi. Kritik olmayan sivil yükler sınırlandırıldı.' },
+        { time: 'T+6.0s', title: 'Katı Hal SMES Besleme', desc: '20 MW süperiletken manyetik batarya anlık devreye girerek 400 mikrosaniyede açığı kapattı.' },
+        { time: 'T+9.0s', title: 'Bilişsel Yük Dengeleme', desc: 'Onsager matrisleri optimize edildi. Frekans 50.00 Hz değerine tam kilitlendi.' },
+        { time: 'T+12.0s', title: 'Şebeke Senkronize ve Güvende', desc: 'Tehdit bertaraf edildi. Şebeke %100 senkronizasyonla normale döndü.' }
+      ]
+    },
+    'fusion-plasma-confinement': {
+      title: 'Manyetik Tokamak Plazma Kırılma Önleme ve Manyetik Kilitleme',
+      text: 'Füzyon reaktöründe termal kaçak ve plazma türbülansı başladığında, yapay zeka geri besleme döngüsü manyetik alan bobinlerini mikrosaniye hassasiyetle kontrol ederek kırılmayı önler.',
+      steps: [
+        { time: 'T+0.0s', title: 'Plazma Manyetik Tutulum Başladı', desc: 'D-T füzyon yakıtı 120 M °C sıcaklığa çıkarıldı. Q-faktörü 3.42 seviyesinde.' },
+        { time: 'T+3.0s', title: 'Plazma Kırılma (Disruption) Riski', desc: 'MHD kararsızlığı nedeniyle plazma çeperine manyetik kaçak tespit edildi.' },
+        { time: 'T+6.0s', title: 'Manyetik Darbe Düzeltmesi', desc: '14.5 Tesla gücünde süperiletken manyetik darbe gönderilerek plazma merkez eksene çekildi.' },
+        { time: 'T+9.0s', title: 'Termal Verim Maksimizasyonu', desc: 'Plazma kilitlenmesi tamamlandı. Termal verim %97.2 seviyesine yükseltildi.' },
+        { time: 'T+12.0s', title: 'Sürekli Füzyon Kararlılığı', desc: 'Reaktör kararlı rejimde net 48.5 MW elektrik üretimine devam ediyor.' }
+      ]
+    },
+    'deep-space-energy-harvest': {
+      title: 'Derin Uzay / Uç Platform Termodinamik Enerji Hasatlama',
+      text: 'Güneş ışınlarının zayıf olduğu derin uzay ve taktik operasyonlarda, kuantum termodinamik serbest enerji hasatlayıcıları ve Seebeck/Peltier hücreleri atık ısıyı elektriğe dönüştürür.',
+      steps: [
+        { time: 'T+0.0s', title: 'Düşük Güç Ortamına Giriş', desc: 'Harici güç kaynakları kesildi. Termodinamik enerji hasatlama sensörleri aktif.' },
+        { time: 'T+3.0s', title: 'Kuantum Seebeck Dönüşümü', desc: 'GaN güç yükselticinin atık ısısından +4.2 kW saf elektrik geri kazanıldı.' },
+        { time: 'T+6.0s', title: 'Serbest Enerji Minimizasyonu', desc: 'Helmholtz serbest enerji formülasyonu ile entropi üretimi sıfıra yakınsadı.' },
+        { time: 'T+9.0s', title: 'Sonsuz Çalışma Döngüsü', desc: 'Uç yapay zeka ajanları sıfır harici enerjiyle kendi kendini idame ettiriyor.' }
+      ]
     }
   };
 
@@ -1713,6 +2180,8 @@ function initMissionControl() {
     // Synchronize views
     if (spec === missionSpecs['ew-patrol']) {
       switchTab('omega');
+    } else if (spec === missionSpecs['energy-grid-defense'] || spec === missionSpecs['fusion-plasma-confinement'] || spec === missionSpecs['deep-space-energy-harvest']) {
+      switchTab('energy');
     } else {
       switchTab('agi');
     }
@@ -1768,6 +2237,9 @@ function initMissionControl() {
     const isEw = spec === missionSpecs['ew-patrol'];
     const isSwarm = spec === missionSpecs['swarm-avoid'];
     const isQuantum = spec === missionSpecs['quantum-decide'];
+    const isGridDefense = spec === missionSpecs['energy-grid-defense'];
+    const isFusionConf = spec === missionSpecs['fusion-plasma-confinement'];
+    const isSpaceHarvest = spec === missionSpecs['deep-space-energy-harvest'];
 
     if (isEw) {
       if (stepIdx === 1) {
@@ -1807,6 +2279,36 @@ function initMissionControl() {
       } else if (stepIdx === 3) {
         // Stabilization
         document.getElementById('chk-quantum-noise').checked = false;
+      }
+    }
+
+    if (isGridDefense) {
+      if (stepIdx === 1) {
+        const modeEl = document.getElementById('select-grid-mode');
+        if (modeEl) {
+          modeEl.value = 'island';
+          modeEl.dispatchEvent(new Event('change'));
+        }
+      } else if (stepIdx === 3) {
+        if (window.balanceGrid) window.balanceGrid();
+      }
+    }
+
+    if (isFusionConf) {
+      if (stepIdx === 2) {
+        if (window.pulsePlasma) window.pulsePlasma();
+      } else if (stepIdx === 3) {
+        if (window.stabilizePlasma) window.stabilizePlasma();
+      }
+    }
+
+    if (isSpaceHarvest) {
+      if (stepIdx === 1) {
+        const modeEl = document.getElementById('select-grid-mode');
+        if (modeEl) {
+          modeEl.value = 'quantum';
+          modeEl.dispatchEvent(new Event('change'));
+        }
       }
     }
 
